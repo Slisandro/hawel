@@ -1,19 +1,37 @@
-import { Button } from "@/components/ui/button"
+"use client";
+
+"use client";
+
+import { useState } from "react"
+
+import { BestCustomersTable } from "@/components/best-customers-table.components";
+import { BestProductsTable } from "@/components/best-product-table.components";
+import { ChartAreaInteractive } from "@/components/chart.components";
+import { KPICards } from "@/components/kpi-cards.components"
+import { AppNavbar } from "@/components/navbar.components"
+import { RangeFilter } from "@/components/range-filter.components"
+import { getDashboardRange, type DashboardRange, type DashboardPeriod } from "@/lib/dashboard-data"
 
 export default function Page() {
+  const [range, setRange] = useState<DashboardRange>(() => getDashboardRange("month"))
+
+  const handleRangeChange = (nextRange: { start: Date; end: Date; period: DashboardPeriod }) => {
+    setRange(nextRange)
+  }
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <div className="min-h-svh">
+      <AppNavbar />
+      <main className="p-6 flex flex-col gap-4">
+        <RangeFilter value={range.period} onRangeChange={handleRangeChange} />
+        <KPICards count={6} range={range} />
+        <ChartAreaInteractive range={range} />
+        <KPICards count={3} range={range} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <BestCustomersTable range={range} />
+          <BestProductsTable range={range} />
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+      </main>
     </div>
   )
 }

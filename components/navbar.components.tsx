@@ -1,0 +1,41 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react"
+import { UserMenu } from "./user-menu.components"
+import { ThemeToggle } from "./theme-toggle.components"
+import NavigationComponent from "./navigation-components"
+
+export function AppNavbar() {
+
+    return (
+        <nav className="border-b border-border bg-background/95">
+            <div className="flex h-16 items-center justify-between px-4 md:px-10 mx-auto">
+                <div className="flex items-center gap-4 md:gap-12">
+                    <div className="font-bold text-lg mr-2 md:mr-6">
+                        Golo
+                    </div>
+
+                    <NavigationComponent />
+                </div>
+
+                <div className="flex-1 hidden md:block" />
+
+                <div className="flex items-center gap-2 md:gap-4">
+                    <Button variant="ghost" className="gap-2 hidden md:flex">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="hidden lg:inline">Más</span>
+                    </Button>
+
+                    <ThemeToggle />
+                    
+                    <Button variant="outline" size="default" className="hidden sm:flex md:size-lg">
+                        90%
+                    </Button>
+
+                    <UserMenu />
+                </div>
+            </div>
+        </nav>
+    )
+}
