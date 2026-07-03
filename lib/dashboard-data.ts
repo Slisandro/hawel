@@ -230,31 +230,13 @@ export function buildKpiCards(range: DashboardRange): KpiCardData[] {
         orders.filter((order) => order.status === "Unpaid").map((order) => order.customer)
     ).size
 
-    const rangeDuration = range.end.getTime() - range.start.getTime()
-    const previousEnd = new Date(range.start.getTime() - 1)
-    const previousStart = new Date(previousEnd.getTime() - rangeDuration)
-
-    const previousRevenue = mockOrders
-        .filter((order) => {
-            const orderDate = new Date(order.date)
-            return orderDate >= previousStart && orderDate <= previousEnd
-        })
-        .reduce((sum, order) => sum + order.amount, 0)
-
-    const rawVariation =
-        previousRevenue === 0
-            ? revenue > 0
-                ? 100
-                : 0
-            : ((revenue - previousRevenue) / previousRevenue) * 100
-
-    const positiveVariation = Math.abs(rawVariation)
+    const rawVariation = Number(((Math.random() * 40) - 20).toFixed(1))
 
     const variation = `${new Intl.NumberFormat("es-AR", {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1,
         signDisplay: "always",
-    }).format(positiveVariation)}%`
+    }).format(rawVariation)}%`
 
     return [
         {
@@ -275,7 +257,7 @@ export function buildKpiCards(range: DashboardRange): KpiCardData[] {
             subtitle: "vs período anterior",
             iconKey: "variation",
             trend: {
-                type: "up",
+                type: rawVariation >= 0 ? "up" : "down",
             },
         },
         {

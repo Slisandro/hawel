@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { ChevronUp } from "lucide-react"
+import { Triangle } from "lucide-react"
 
 interface KPIProps {
     title: string
@@ -21,18 +21,14 @@ export default function KPICard({ title, value, subtitle, icon, trend }: KPIProp
         return (
             <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow py-2 px-2 gap-0 flex items-center justify-center">
                 <CardContent className="pt-1 flex items-center justify-center gap-2">
-                    <ChevronUp
+                    <Triangle
                         className={cn(
                             "text-base font-semibold leading-tight text-center flex items-center gap-1 justify-center",
-                            trend?.type === "up" && "text-green-700 dark:text-green-400",
-                            trend?.type === "down" && "text-red-700 dark:text-red-400"
+                            trend?.type === "up" && "text-green-700 fill-green-700 dark:text-green-400 dark:fill-green-400",
+                            trend?.type === "down" && "text-red-700 fill-red-700 dark:text-red-400 dark:fill-red-400 rotate-180"
                         )} />
                     <div
-                        className={cn(
-                            "text-base font-semibold leading-tight text-center flex items-center gap-1 justify-center",
-                            trend?.type === "up" && "text-green-700 dark:text-green-400",
-                            trend?.type === "down" && "text-red-700 dark:text-red-400"
-                        )}
+                        className="text-xl font-bold leading-tight text-center flex items-center gap-1 justify-center"
                     >
                         {value} {subtitle}
                     </div>
