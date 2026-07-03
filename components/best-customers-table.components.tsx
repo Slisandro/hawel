@@ -12,29 +12,21 @@ import { Card } from "./ui/card"
 import { buildRankedCustomers, type DashboardRange } from "@/lib/dashboard-data"
 
 export function BestCustomersTable({ range }: { range: DashboardRange }) {
-    const customers = buildRankedCustomers(range).slice(0, 3)
+    const customers = buildRankedCustomers(range, 2)
 
     return (
-        <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow px-4 flex items-center justify-center">
+        <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead colSpan={3}>Top 3 clientes del período</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Cliente</TableHead>
-                        <TableHead className="text-right">Pedidos</TableHead>
-                        <TableHead className="text-right">Facturado</TableHead>
+                        <TableHead colSpan={2}>Top 2 vendedores del período</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {customers.map((customer) => (
                         <TableRow key={customer.label}>
-                            <TableCell className="font-medium">{customer.label}</TableCell>
-                            <TableCell className="text-right">{customer.count}</TableCell>
-                            <TableCell className="text-right">
+                            <TableCell className="font-medium py-2">{customer.label}</TableCell>
+                            <TableCell className="text-right py-2">
                                 {new Intl.NumberFormat("es-AR", {
                                     style: "currency",
                                     currency: "ARS",

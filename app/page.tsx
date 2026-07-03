@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import { useState } from "react"
 
 import { BestCustomersTable } from "@/components/best-customers-table.components";
@@ -20,14 +18,16 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-svh">
+    <div className="min-h-svh flex flex-col gap-2 h-[100vh]">
       <AppNavbar />
-      <main className="p-6 flex flex-col gap-4">
+      <main className="py-1 px-3 md:px-4 flex flex-col gap-2 flex-1 min-h-0">
         <RangeFilter value={range.period} onRangeChange={handleRangeChange} />
-        <KPICards count={6} range={range} />
-        <ChartAreaInteractive range={range} />
-        <KPICards count={3} range={range} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <KPICards count={6} startIndex={0} range={range} />
+        <div className="flex-1 flex min-h-0">
+          <ChartAreaInteractive range={range} />
+        </div>
+        <KPICards count={3} startIndex={6} range={range} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <BestCustomersTable range={range} />
           <BestProductsTable range={range} />
         </div>

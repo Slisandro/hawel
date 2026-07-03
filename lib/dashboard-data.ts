@@ -26,7 +26,10 @@ export interface KpiCardData {
     title: string
     value: string
     subtitle: string
-    iconKey: "revenue" | "orders" | "customers" | "frequency" | "topCustomer" | "topProduct"
+    iconKey: "orders" | "sales" | "variation" | "pending" | "customers" | "ticket" | "debt" | "stock" | "risk"
+    trend?: {
+        type: "up" | "down"
+    }
 }
 
 export interface RankedItem {
@@ -35,7 +38,7 @@ export interface RankedItem {
     count: number
 }
 
-const customers = ["Tomas Lakub", "Mariana Ruiz", "Sofia Perez", "Lucas Gomez", "Valentina Diaz", "Diego Torres"]
+const customers = ["Julián Daniele", "Mariana Ruiz", "Sofia Perez", "Lucas Gomez", "Valentina Diaz", "Diego Torres"]
 const products = ["Blend A", "Blend B", "Capsule Kit", "Cold Brew", "Maintenance Plan", "Training Session"]
 const paymentMethods = ["Credit Card", "PayPal", "Bank Transfer"]
 const statuses: Array<OrderRecord["status"]> = ["Paid", "Pending", "Unpaid"]
@@ -190,7 +193,7 @@ export function buildChartData(range: DashboardRange): ChartDatum[] {
     })
 }
 
-function getRankedTotals(key: "customer" | "product", range: DashboardRange): RankedItem[] {
+function getRankedTotals(key: "customer" | "product", range: DashboardRange, limit: number): RankedItem[] {
     const totals = new Map<string, RankedItem>()
 
     filterOrdersByRange(range).forEach((order) => {
@@ -202,7 +205,7 @@ function getRankedTotals(key: "customer" | "product", range: DashboardRange): Ra
         totals.set(label, current)
     })
 
-    return Array.from(totals.values()).sort((left, right) => right.total - left.total)
+    return Array.from(totals.values()).sort((left, right) => right.total - left.total).slice(0, limit)
 }
 
 function formatCurrency(value: number) {
@@ -218,58 +221,106 @@ export function buildKpiCards(range: DashboardRange): KpiCardData[] {
     const revenue = orders.reduce((sum, order) => sum + order.amount, 0)
     const averageTicket = orders.length ? revenue / orders.length : 0
     const activeCustomers = new Set(orders.map((order) => order.customer)).size
-    const daysInRange = Math.max(
-        1,
-        Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24)) + 1,
-    )
-    const ordersPerDay = orders.length / daysInRange
-    const topCustomer = getRankedTotals("customer", range)[0]
-    const topProduct = getRankedTotals("product", range)[0]
+    const pendingOrders = orders.filter((order) => order.status === "Pending").length
+    const retainedDebt = orders
+        .filter((order) => order.status !== "Paid")
+        .reduce((sum, order) => sum + order.amount, 0)
+    const stockIssues = Math.max(1, Math.round(orders.length * 0.06))
+    const riskyCustomers = new Set(
+        orders.filter((order) => order.status === "Unpaid").map((order) => order.customer)
+    ).size
+
+    const rangeDuration = range.end.getTime() - range.start.getTime()
+    const previousEnd = new Date(range.start.getTime() - 1)
+    const previousStart = new Date(previousEnd.getTime() - rangeDuration)
+
+    const previousRevenue = mockOrders
+        .filter((order) => {
+            const orderDate = new Date(order.date)
+            return orderDate >= previousStart && orderDate <= previousEnd
+        })
+        .reduce((sum, order) => sum + order.amount, 0)
+
+    const rawVariation =
+        previousRevenue === 0
+            ? revenue > 0
+                ? 100
+                : 0
+            : ((revenue - previousRevenue) / previousRevenue) * 100
+
+    const positiveVariation = Math.abs(rawVariation)
+
+    const variation = `${new Intl.NumberFormat("es-AR", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+        signDisplay: "always",
+    }).format(positiveVariation)}%`
 
     return [
         {
-            title: "Ingresos del período",
-            value: formatCurrency(revenue),
-            subtitle: `${orders.length} pedidos · ${formatRangeLabel(range)}`,
-            iconKey: "revenue",
-        },
-        {
-            title: "Ticket promedio",
-            value: formatCurrency(averageTicket),
-            subtitle: `${orders.length} pedidos en el rango`,
+            title: "Pedidos Totales",
+            value: String(orders.length),
+            subtitle: "",
             iconKey: "orders",
         },
         {
-            title: "Clientes activos",
+            title: "Venta Total ($)",
+            value: formatCurrency(revenue),
+            subtitle: "",
+            iconKey: "sales",
+        },
+        {
+            title: "Variación",
+            value: variation,
+            subtitle: "vs período anterior",
+            iconKey: "variation",
+            trend: {
+                type: "up",
+            },
+        },
+        {
+            title: "Por Confirmar",
+            value: String(pendingOrders),
+            subtitle: "",
+            iconKey: "pending",
+        },
+        {
+            title: "Clientes Activos",
             value: String(activeCustomers),
-            subtitle: "Clientes con compras en el período",
+            subtitle: "",
             iconKey: "customers",
         },
         {
-            title: "Frecuencia",
-            value: `${ordersPerDay.toFixed(1)}/día`,
-            subtitle: "Pedidos promedio por día",
-            iconKey: "frequency",
+            title: "Ticket Promedio",
+            value: formatCurrency(averageTicket),
+            subtitle: "",
+            iconKey: "ticket",
         },
         {
-            title: "Top cliente",
-            value: topCustomer ? topCustomer.label : "Sin datos",
-            subtitle: topCustomer ? `${formatCurrency(topCustomer.total)} facturados` : "No hay registros",
-            iconKey: "topCustomer",
+            title: "Monto retenido por deuda",
+            value: formatCurrency(retainedDebt),
+            subtitle: "",
+            iconKey: "debt",
         },
         {
-            title: "Top producto",
-            value: topProduct ? topProduct.label : "Sin datos",
-            subtitle: topProduct ? `${topProduct.count} ventas en el período` : "No hay registros",
-            iconKey: "topProduct",
+            title: "Pedidos sin Stock",
+            value: String(stockIssues),
+            subtitle: "",
+            iconKey: "stock",
+        },
+        {
+            title: "Clientes en Riesgo",
+            value: String(riskyCustomers),
+            subtitle: "",
+            iconKey: "risk",
         },
     ]
 }
 
-export function buildRankedCustomers(range: DashboardRange) {
-    return getRankedTotals("customer", range)
+export function buildRankedCustomers(range: DashboardRange, limit: number) {
+    return getRankedTotals("customer", range, limit)
 }
 
-export function buildRankedProducts(range: DashboardRange) {
-    return getRankedTotals("product", range)
+export function buildRankedProducts(range: DashboardRange, limit: number) {
+    return getRankedTotals("product", range, limit)
 }

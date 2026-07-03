@@ -15,9 +15,9 @@ export function UserMenu() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 hover:bg-accent rounded-md px-2 py-1 transition-colors">
-                    <span className="text-sm font-medium">Tomas Lakub</span>
+                    <span className="text-sm font-medium">Julián Daniele</span>
                     <Avatar className="h-8 w-8">
-                        <AvatarFallback>TL</AvatarFallback>
+                        <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
                 </button>
             </DropdownMenuTrigger>

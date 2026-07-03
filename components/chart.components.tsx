@@ -37,13 +37,16 @@ export function ChartAreaInteractive({ range }: { range: DashboardRange }) {
   const filteredData = React.useMemo(() => buildChartData(range), [range])
 
   return (
-    <Card className="py-4">
-      <CardContent className="px-2 pt-0 sm:px-6 sm:pt-6">
+    <Card className="py-2 flex-1 flex flex-col border-border/40 shadow-sm hover:shadow-md transition-shadow min-h-0">
+      <CardContent className="px-2 pt-0 sm:px-4 sm:pt-3 flex flex-1 min-h-0">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="flex-1 w-full min-h-0"
         >
-          <AreaChart data={filteredData}>
+          <AreaChart 
+            data={filteredData}
+            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+          >
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
