@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { BestCustomersTable } from "@/components/best-customers-table.components";
 import { BestProductsTable } from "@/components/best-product-table.components";
@@ -12,6 +12,17 @@ import { getDashboardRange, type DashboardRange, type DashboardPeriod } from "@/
 
 export default function Page() {
   const [range, setRange] = useState<DashboardRange>(() => getDashboardRange("month"))
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClient(true)
+  }, [])
+
+  // Si no está en el cliente, muestra un loader o skeleton
+  if (!isClient) {
+    return <div className="flex-1 flex items-center justify-center">Cargando...</div>
+  }
 
   const handleRangeChange = (nextRange: { start: Date; end: Date; period: DashboardPeriod }) => {
     setRange(nextRange)
