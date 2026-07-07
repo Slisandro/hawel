@@ -21,7 +21,7 @@ export function AppNavbar() {
                                 alt="Logo"
                                 fill
                                 className="object-contain"
-                                sizes="(max-width: 768px) 100vw, 100px"
+                                sizes="(max-width: 768px) 100vw, 100%"
                             />
                         </div>
                     </Link>

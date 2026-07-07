@@ -161,13 +161,39 @@ export default function OrdersPanel() {
         switch (status) {
             case "pending":
                 return (
-                    <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300 border-green-200 dark:border-green-800 font-semibold">
+                    <Badge
+                        className={`
+                            font-semibold
+                            /* Modo claro */
+                            bg-[#E8F9F4] 
+                            text-[#0B8A6E] 
+                            border-[#99E8D2]
+                            
+                            /* Modo oscuro */
+                            dark:bg-[#1A3D35] 
+                            dark:text-[#4AD9B0] 
+                            dark:border-[#4AD9B0]
+                        `}
+                    >
                         Pendiente
                     </Badge>
                 )
             case "confirmed":
                 return (
-                    <Badge className="bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border-blue-200 dark:border-blue-800 font-semibold">
+                    <Badge
+                        className={`
+                            font-semibold
+                            /* Modo claro */
+                            bg-[#F2A9A2] 
+                            text-[#7A2E2A] 
+                            border-[#E8837A]
+                            
+                            /* Modo oscuro */
+                            dark:bg-[#3D1A1A] 
+                            dark:text-[#F2A9A2] 
+                            dark:border-[#E8837A]
+                        `}
+                    >
                         Confirmado
                     </Badge>
                 )
@@ -361,12 +387,12 @@ export default function OrdersPanel() {
                                                 <Checkbox />
                                                 <Avatar className={
                                                     cn("w-8 h-8 text-white flex items-center justify-center",
-                                                        order.status === "pending" ? "bg-green-500" : "bg-blue-500"
+                                                        order.status === "pending" ? "bg-[#4AD9B0]" : "bg-[#F26666]"
                                                     )
                                                 }>
                                                     <AvatarFallback className={
                                                         cn("w-8 h-8 text-white flex items-center justify-center",
-                                                            order.status === "pending" ? "bg-green-500" : "bg-blue-500"
+                                                            order.status === "pending" ? "bg-[#4AD9B0]" : "bg-[#F26666]"
                                                         )
                                                     }>{order.client.charAt(0) + order.client.charAt(1).toUpperCase()}</AvatarFallback>
                                                 </Avatar>
@@ -405,7 +431,7 @@ export default function OrdersPanel() {
                                                                         <div className="flex items-center gap-2">
                                                                             <div className="flex flex-col items-end justify-end">
                                                                                 <p className="text-md font-bold">$ 332.434,80</p>
-                                                                                <p className="text-xs font-semibold text-green-500">Ahorro: -$50.000,00</p>
+                                                                                <p className="text-xs font-semibold text-[#4AD9B0]">Ahorro: -$50.000,00</p>
                                                                                 <p className="text-xs font-semibold text-gray-500">Total acumulado</p>
                                                                             </div>
 
@@ -472,12 +498,12 @@ export default function OrdersPanel() {
                                             <div className="flex items-center gap-4">
                                                 <Avatar className={
                                                     cn("w-8 h-8 text-white flex items-center justify-center",
-                                                        order.status === "pending" ? "bg-green-500" : "bg-blue-500"
+                                                        order.status === "pending" ? "bg-[#4AD9B0]" : "bg-blue-500"
                                                     )
                                                 }>
                                                     <AvatarFallback className={
                                                         cn("w-8 h-8 text-white flex items-center justify-center",
-                                                            order.status === "pending" ? "bg-green-500" : "bg-blue-500"
+                                                            order.status === "pending" ? "bg-[#4AD9B0]" : "bg-blue-500"
                                                         )
                                                     }>{order.client.charAt(0) + order.client.charAt(1).toUpperCase()}</AvatarFallback>
                                                 </Avatar>
