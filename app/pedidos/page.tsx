@@ -159,7 +159,7 @@ export default function OrdersPanel() {
 
     const getStatusBadge = (status: Order["status"]) => {
         switch (status) {
-            case "pending":
+            case "confirmed":
                 return (
                     <Badge
                         className={`
@@ -175,10 +175,10 @@ export default function OrdersPanel() {
                             dark:border-[#4AD9B0]
                         `}
                     >
-                        Pendiente
+                        Confirmado
                     </Badge>
                 )
-            case "confirmed":
+            case "pending":
                 return (
                     <Badge
                         className={`
@@ -194,7 +194,7 @@ export default function OrdersPanel() {
                             dark:border-[#E8837A]
                         `}
                     >
-                        Confirmado
+                        Pendiente
                     </Badge>
                 )
             default:
@@ -387,12 +387,12 @@ export default function OrdersPanel() {
                                                 <Checkbox />
                                                 <Avatar className={
                                                     cn("w-8 h-8 text-white flex items-center justify-center",
-                                                        order.status === "pending" ? "bg-[#4AD9B0]" : "bg-[#F26666]"
+                                                        order.status === "pending" ? "bg-[#F26666]" : "bg-[#4AD9B0]"
                                                     )
                                                 }>
                                                     <AvatarFallback className={
                                                         cn("w-8 h-8 text-white flex items-center justify-center",
-                                                            order.status === "pending" ? "bg-[#4AD9B0]" : "bg-[#F26666]"
+                                                            order.status === "pending" ? "bg-[#F26666]" : "bg-[#4AD9B0]"
                                                         )
                                                     }>{order.client.charAt(0) + order.client.charAt(1).toUpperCase()}</AvatarFallback>
                                                 </Avatar>

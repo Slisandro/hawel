@@ -13,15 +13,14 @@ export function AppNavbar() {
     return (
         <nav className="border-b border-border bg-background/95">
             <div className="flex h-16 items-center justify-between px-2 md:px-4 mx-auto">
-                <div className="flex items-center gap-4 md:gap-12">
-                    <Link href="/" className="min-w-[100px] min-h-16 flex items-center justify-center relative">
-                        <div className="relative h-16 w-auto aspect-square">
+                <div className="flex items-center gap-4 md:gap-12 h-full">
+                    <Link href="/" className="min-w-[100px] h-full flex items-center justify-center relative">
+                        <div className="relative h-full w-full">
                             <Image
-                                src="/hawel.png"
+                                src="/hawel.webp"
                                 alt="Logo"
                                 fill
-                                className="object-contain"
-                                sizes="(max-width: 768px) 100vw, 100%"
+                                className="object-contain h-full w-full"
                             />
                         </div>
                     </Link>

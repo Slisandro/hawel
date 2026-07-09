@@ -1,14 +1,13 @@
 "use client";
 import { AppNavbar } from "@/components/navbar.components";
 import { Badge } from "@/components/ui/badge";
-import { Search, MoreVertical, ArrowLeft, Send, Paperclip, Mic, CheckCheck, Archive, BookText, Store, Box, Bot, SquareCheckBig } from "lucide-react";
+import { Search, ArrowLeft, Send, Paperclip, Mic, CheckCheck, Archive, BookText, Store, Box, Bot, SquareCheckBig } from "lucide-react";
 import {
     Select,
     SelectContent,
     SelectGroup,
     SelectItem,
     SelectLabel,
-    SelectSeparator,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
