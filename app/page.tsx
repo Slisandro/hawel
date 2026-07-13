@@ -60,6 +60,7 @@ const Navbar = () => {
         <Link href="/">Home</Link>
         <Link href="/sobre-hawel">Sobre Hawel</Link>
         <Link href="/contacto">Contacto</Link>
+        <Link className="text-xs underline" href="/dashboard">Dashboard</Link>
       </div>
     </nav>
   )
