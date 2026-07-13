@@ -18,14 +18,14 @@ import { AppNavbar } from "@/components/navbar.components"
 import { cn } from "@/lib/utils"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 interface DetailClient {
     id: string;
     name: string;
     location: string;
     status: Filter;
-    lastPurchase?: string;
+    lastPurchaseDays?: number;
     dateEntrega?: string;
     cxd: string;
     details?: {
@@ -41,26 +41,50 @@ enum Filter {
 
 const mockClients: DetailClient[] = [
     {
-        id: "C001",
-        name: "Comercio ABC",
-        location: "Zona Norte",
+        id: "CLI-10024",
+        name: "Distribuidora Mundo Vegetal",
+        location: "Bahía Blanca - Centro",
         status: Filter.Day,
-        lastPurchase: "2026-06-15",
+        lastPurchaseDays: 3,
         cxd: "1/5 d",
     },
     {
-        id: "C002",
-        name: "Comercio ABC",
-        location: "Zona Norte",
+        id: "CLI-10025",
+        name: "Almacén El Cóndor",
+        location: "Bahía Blanca - Norte",
         status: Filter.AtRisk,
-        lastPurchase: "2026-06-15",
+        lastPurchaseDays: 22,
         cxd: "1/3 d",
+    },
+    {
+        id: "CLI-10026",
+        name: "Mini Cooperativa Obrera",
+        location: "Punta Alta",
+        status: Filter.Day,
+        lastPurchaseDays: 2,
+        cxd: "1/4 d",
+    },
+    {
+        id: "CLI-10027",
+        name: "Autoservicio San Martín",
+        location: "Bahía Blanca - Sur",
+        status: Filter.Day,
+        lastPurchaseDays: 4,
+        cxd: "1/6 d",
+    },
+    {
+        id: "CLI-10028",
+        name: "Stanich Cristian",
+        location: "Ingeniero White",
+        status: Filter.AtRisk,
+        lastPurchaseDays: 18,
+        cxd: "1/2 d",
     }
 ]
 
 const KPIs = [
     {
-        title: "Renevue Total",
+        title: "Revenue Total",
         icon: <DollarSign className="h-5 w-5" />,
         subtitle: "desde sept. 2025",
         value: "$63.3M"
@@ -88,6 +112,12 @@ const KPIs = [
 export default function ClientsPanel() {
     const [clients] = useState<DetailClient[]>(mockClients)
     const [expandedId, setExpandedId] = useState<string | null>(null)
+    const [activeFilter, setActiveFilter] = useState<Filter>(Filter.All)
+
+    const filteredClients = clients.filter(client => {
+        if (activeFilter === Filter.All) return true
+        return client.status === activeFilter
+    })
 
     const getStatusBadge = (status: DetailClient["status"]) => {
         switch (status) {
@@ -96,15 +126,12 @@ export default function ClientsPanel() {
                     <Badge
                         className={`
                             font-semibold
-                            /* Modo claro */
-                            bg-[#E8F9F4] 
-                            text-[#0B8A6E] 
-                            border-[#99E8D2]
-                            
-                            /* Modo oscuro */
-                            dark:bg-[#1A3D35] 
-                            dark:text-[#4AD9B0] 
-                            dark:border-[#4AD9B0]
+                            bg-[#E0F7F3] 
+                            text-[#0D7C6E] 
+                            border-[#7DD4C4]
+                            dark:bg-[#1A3D38] 
+                            dark:text-[#4AD9C4] 
+                            dark:border-[#4AD9C4]
                         `}
                     >
                         Al día
@@ -115,12 +142,9 @@ export default function ClientsPanel() {
                     <Badge
                         className={`
                             font-semibold
-                            /* Modo claro */
                             bg-[#F2A9A2] 
                             text-[#7A2E2A] 
                             border-[#E8837A]
-                            
-                            /* Modo oscuro */
                             dark:bg-[#3D1A1A] 
                             dark:text-[#F2A9A2] 
                             dark:border-[#E8837A]
@@ -134,12 +158,9 @@ export default function ClientsPanel() {
                     <Badge
                         className={`
                             font-semibold
-                            /* Modo claro */
                             bg-[#E8F0F9] 
                             text-[#0B3A8A] 
                             border-[#99C0E8]
-                            
-                            /* Modo oscuro */
                             dark:bg-[#1A2D3D] 
                             dark:text-[#4A9BF2] 
                             dark:border-[#4A9BF2]
@@ -169,13 +190,42 @@ export default function ClientsPanel() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <Filters value={Filter.Day} onRangeChange={(range) => console.log("Rango seleccionado:", range)} />
+                            <Filters
+                                value={activeFilter}
+                                onFilterChange={setActiveFilter}
+                            />
                         </div>
                     </div>
                 </div>
                 <div className="flex-1 overflow-auto">
                     <div className="pt-3 flex-1 h-full gap-2 flex flex-col overflow-auto">
-                        {clients.map((client) => (
+                        {/* HEADER DE TABLA - UNA SOLA VEZ */}
+                        <div className="grid grid-cols-12 gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700">
+                            <div className="col-span-1">
+                                <span className="text-sm font-bold text-muted-foreground">Código ERP</span>
+                            </div>
+                            <div className="col-span-3">
+                                <span className="text-sm font-bold text-muted-foreground">Nombre del Comercio / Razón Social</span>
+                            </div>
+                            <div className="col-span-2">
+                                <span className="text-sm font-bold text-muted-foreground">Localidad / Zona</span>
+                            </div>
+                            <div className="col-span-1">
+                                <span className="text-sm font-bold text-muted-foreground">c/X d</span>
+                            </div>
+                            <div className="col-span-2">
+                                <span className="text-sm font-bold text-muted-foreground">Estado</span>
+                            </div>
+                            <div className="col-span-2">
+                                <span className="text-sm font-bold text-muted-foreground">Última Compra</span>
+                            </div>
+                            <div className="col-span-1 text-right">
+                                <span className="text-sm font-bold text-muted-foreground">Acción</span>
+                            </div>
+                        </div>
+
+                        {/* LISTA DE CLIENTES */}
+                        {filteredClients.map((client) => (
                             <Collapsible
                                 key={client.id}
                                 open={expandedId === client.id}
@@ -189,43 +239,43 @@ export default function ClientsPanel() {
                                     <CollapsibleTrigger
                                         asChild
                                         className={
-                                            cn("w-full h-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800", expandedId === client.id ? "bg-gray-100 dark:bg-gray-800" : "")
+                                            cn("w-full h-full hover:bg-gray-100 dark:hover:bg-gray-800",
+                                                expandedId === client.id ? "bg-gray-100 dark:bg-gray-800" : "")
                                         }
                                     >
                                         <div className="cursor-pointer">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex flex-col gap-1 pr-4">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">Código</span>
-                                                    <p className="text-sm font-bold">{client.id}</p>
+                                            <div className="grid grid-cols-12 gap-2 items-center px-4 py-2">
+                                                <div className="col-span-1">
+                                                    <p className="text-sm font-semibold">{client.id}</p>
                                                 </div>
-                                                <div className="flex flex-col gap-1 flex-1">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">Nombre del Comercio / Razón Social</span>
-                                                    <p className="text-sm font-bold">{client.name}</p>
+                                                <div className="col-span-3">
+                                                    <p className="text-sm font-semibold">{client.name}</p>
                                                 </div>
-                                                <div className="flex flex-col gap-1 flex-1">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">Localidad / Zona</span>
-                                                    <p className="text-sm font-bold">{client.location}</p>
+                                                <div className="col-span-2">
+                                                    <p className="text-sm font-semibold">{client.location}</p>
                                                 </div>
-                                                <div className="flex flex-col gap-1 flex-1">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">c/X d</span>
-                                                    <p className="text-sm font-bold">{client.cxd}</p>
+                                                <div className="col-span-1">
+                                                    <p className="text-sm font-semibold">{client.cxd}</p>
                                                 </div>
-                                                <div className="flex flex-col gap-1 flex-1">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">Estado</span>
+                                                <div className="col-span-2">
                                                     {getStatusBadge(client.status)}
                                                 </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[10px] font-semibold uppercase text-muted-foreground">Última Compra</span>
-                                                    <p className="text-sm font-bold">{client.lastPurchase ?? "N/A"}</p>
+                                                <div className="col-span-2">
+                                                    <p className="text-sm font-semibold">
+                                                        {client.lastPurchaseDays !== undefined
+                                                            ? `${client.lastPurchaseDays} días`
+                                                            : "N/A"}
+                                                    </p>
                                                 </div>
-                                                <div className="flex items-center gap-2" >
+                                                <div className="col-span-1 flex justify-end">
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
                                                         className="h-8 w-8 p-0"
-                                                        onClick={() =>
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
                                                             setExpandedId(expandedId === client.id ? null : client.id)
-                                                        }
+                                                        }}
                                                     >
                                                         {expandedId === client.id ? (
                                                             <ChevronUp className="h-4 w-4" />
@@ -238,64 +288,7 @@ export default function ClientsPanel() {
                                         </div>
                                     </CollapsibleTrigger>
 
-                                    <CollapsibleContent className="p-4 gap-3 flex flex-col" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex items-center gap-4">
-                                                <span className="font-medium flex items-center gap-2 text-sm">
-                                                    {client.name}
-                                                    <Badge variant="default" className="bg-gray-800 dark:bg-gray-700 text-white dark:text-white">Activo</Badge>
-                                                    <span className="text-xs font-light">Distribuidora Premium - José León Suarez </span>
-                                                    <span className="text-xs flex items-center font-light">
-                                                        <Calendar className="h-4 w-4 mr-1" />
-                                                        <span className="text-xs font-light">29 ago</span>
-                                                    </span>
-                                                </span>
-
-                                                <div className="flex ml-auto gap-2">
-                                                    <Filters onRangeChange={() => { }} value={Filter.All} />
-                                                    <Button variant="outline">
-                                                        <MessageSquare />
-                                                    </Button>
-                                                    <Button variant="secondary" className="text-black dark:text-white gap-2">
-                                                        <Pencil />
-                                                        Editar
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-4 grid grid-cols-4 gap-4">
-                                                {KPIs.map((item, index) => (
-                                                    <KPICard
-                                                        key={index}
-                                                        {...item}
-                                                    />
-                                                ))}
-                                            </div>
-
-                                            <ChartAreaInteractive />
-
-                                            <Card className="py-3 px-0">
-                                                <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                                                    <Brain className="text-lime-500 h-5 w-5" />
-                                                    <span className="text-md font-semibold">Memorías</span>
-                                                </CardContent>
-                                            </Card>
-
-                                            <Card className="py-3 px-0">
-                                                <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                                                    <Handshake className="text-lime-500 h-5 w-5" />
-                                                    <span className="text-md font-semibold">Acuerdos</span>
-                                                </CardContent>
-                                            </Card>
-
-                                            <Card className="py-3 px-0">
-                                                <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                                                    <ShoppingCart className="text-lime-500 h-5 w-5" />
-                                                    <span className="text-md font-semibold">Pedidos (53)</span>
-                                                </CardContent>
-                                            </Card>
-                                        </div>
-                                    </CollapsibleContent>
+                                    <CollapsibleClientDetail client={client} />
                                 </Card>
                             </Collapsible>
                         ))}
@@ -306,22 +299,55 @@ export default function ClientsPanel() {
     )
 }
 
-function Filters({ value, onRangeChange }: { value?: Filter; onRangeChange?: (range: { start: Date; end: Date; period: Filter }) => void }) {
-    const [internalPeriod, setInternalPeriod] = useState<Filter>(Filter.Day);
+// FILTERS
+
+function Filters({
+    value,
+    onFilterChange,
+    variant = "default"
+}: {
+    value?: Filter;
+    onFilterChange?: (filter: Filter) => void;
+    variant?: "default" | "ampliado";
+}) {
+    const [internalPeriod, setInternalPeriod] = useState<Filter>(Filter.All);
     const periods = [
-        { label: "Todos", value: "all" as const },
-        { label: "Al día", value: "day" as const },
-        { label: "En riesgo", value: "at_risk" as const },
+        { label: "Todos", value: Filter.All },
+        { label: "Al día", value: Filter.Day },
+        { label: "En riesgo", value: Filter.AtRisk },
     ]
 
     const selectedPeriod = value ?? internalPeriod
 
     const handlePeriodClick = (period: Filter) => {
         setInternalPeriod(period)
-        onRangeChange?.({ start: new Date(), end: new Date(), period })
+        onFilterChange?.(period)
     }
 
     const isActive = (period: Filter) => selectedPeriod === period
+
+    if (variant === "ampliado") {
+        return (
+            <div className="flex items-center gap-1 p-1 bg-gray-100 dark:bg-zinc-800 rounded-lg">
+                {periods.map((period) => (
+                    <Button
+                        key={period.value}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                            "h-7 px-3 py-0 text-xs font-medium rounded-md transition-all",
+                            isActive(period.value)
+                                ? "bg-white dark:bg-gray-700 shadow-sm text-emerald-600 dark:text-emerald-400"
+                                : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        )}
+                        onClick={() => handlePeriodClick(period.value)}
+                    >
+                        {period.label}
+                    </Button>
+                ))}
+            </div>
+        )
+    }
 
     return (
         <Card className="w-auto ml-auto border-border/40 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
@@ -333,11 +359,11 @@ function Filters({ value, onRangeChange }: { value?: Filter; onRangeChange?: (ra
                         size="sm"
                         className={cn(
                             "h-8 px-4 py-1 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-800",
-                            isActive(period.value as Filter)
-                                ? "bg-gray-300 rounded-2xl dark:hover:bg-stone-800 dark:bg-stone-700"
+                            isActive(period.value)
+                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-2xl"
                                 : ""
                         )}
-                        onClick={() => handlePeriodClick(period.value as Filter)}
+                        onClick={() => handlePeriodClick(period.value)}
                     >
                         {period.label}
                     </Button>
@@ -347,6 +373,9 @@ function Filters({ value, onRangeChange }: { value?: Filter; onRangeChange?: (ra
     )
 }
 
+// FILTERS
+
+// KPI CARD
 interface KPIProps {
     title: string
     value: string
@@ -364,12 +393,10 @@ function KPICard({ title, value, subtitle, icon }: KPIProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     {title}
                 </CardTitle>
-                {icon && <div className="h-auto w-auto text-muted-foreground border border-muted-foreground/20 p-1 bg-muted-foreground/5 rounded-md">{icon}</div>}
+                {icon && <div className="h-auto w-auto text-emerald-600 border border-emerald-200/20 p-1 bg-emerald-50 dark:bg-emerald-950/20 rounded-md">{icon}</div>}
             </CardHeader>
             <CardContent className="pt-1">
-                <div
-                    className={"text-xl font-bold leading-tight"}
-                >
+                <div className={"text-xl font-bold leading-tight"}>
                     {value}
                 </div>
                 {subtitle ? (
@@ -380,14 +407,85 @@ function KPICard({ title, value, subtitle, icon }: KPIProps) {
     )
 }
 
+// KPI CARD
+
+// COLLAPSIBLE CLIENT DETAIL
+
+const CollapsibleClientDetail = ({ client }: { client: DetailClient }) => {
+    const [activeFilter, setActiveFilter] = useState<Filter>(Filter.All)
+    const [activeTab, setActiveTab] = useState<"charts" | "memorias" | "acuerdos" | "pedidos">("charts")
+
+    return (
+        <CollapsibleContent className="p-4 gap-3 flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                    <span className="font-medium flex items-center gap-2 text-sm">
+                        {client.name}
+                        <Badge variant="default" className="bg-gray-800 dark:bg-gray-700 text-white dark:text-white">Activo</Badge>
+                        <span className="text-xs font-light">Distribuidora Premium - José León Suarez </span>
+                        <span className="text-xs flex items-center font-light">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            <span className="text-xs font-light">29 ago</span>
+                        </span>
+                    </span>
+
+                    <div className="flex ml-auto gap-2">
+                        <Filters
+                            value={activeFilter}
+                            onFilterChange={setActiveFilter}
+                            variant="ampliado"
+                        />
+                        <Button variant="outline">
+                            <MessageSquare />
+                        </Button>
+                        <Button variant="secondary" className="text-black dark:text-white gap-2">
+                            <Pencil />
+                            Editar
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-4 gap-4">
+                    {KPIs.map((item, index) => (
+                        <KPICard
+                            key={index}
+                            {...item}
+                        />
+                    ))}
+                </div>
+
+                <TabCharts active={activeTab} onClick={() => setActiveTab("charts")} />
+
+                <TabMemories active={activeTab} onClick={() => setActiveTab("memorias")} />
+
+                <TabAcuerdos active={activeTab} onClick={() => setActiveTab("acuerdos")} />
+
+                <TabPedidos active={activeTab} onClick={() => setActiveTab("pedidos")} />
+            </div>
+        </CollapsibleContent>
+    )
+}
+
+// TABS 
+
+// CHARTS
+
 const chartConfig = {
-    XAxis: {
-        label: "Fecha",
-        color: "var(--text-muted-foreground)",
+    desktop: {
+        label: "Cantidad",
+        color: "#4AD9C4", // Turquesa principal
+    },
+    mobile: {
+        label: "Frecuencia",
+        color: "#0D7C6E", // Turquesa oscuro
+    },
+    price: {
+        label: "Precio",
+        color: "#66D9C9", // Turquesa medio
     }
 } satisfies ChartConfig
 
-function ChartAreaInteractive() {
+function TabCharts({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
     const filteredData = [
         { label: "2026-06-01", desktop: 4000, mobile: 2400, price: 12500 },
         { label: "2026-06-02", desktop: 3000, mobile: 1398, price: 8900 },
@@ -398,166 +496,238 @@ function ChartAreaInteractive() {
         { label: "2026-06-07", desktop: 3490, mobile: 4300, price: 21000 }
     ]
 
+    const handleClick = () =>
+        active === "charts" ?
+            onClick("charts")
+            : onClick(null)
+
+    if (active === "charts") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1 min-h-0 max-h-[400px]" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-2 justify-between flex-1 min-h-0">
+                    <div className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                                <Activity className="text-emerald-500 h-5 w-5" />
+                                <span>Ciclo de Vida</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2 bg-gray-800 dark:bg-zinc-600 text-white dark:text-white">
+                                    Cantidad
+                                </Badge>
+                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2">
+                                    Top productos
+                                </Badge>
+                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2">
+                                    Frecuencia
+                                </Badge>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                            <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900 dark:text-emerald-400">
+                                <ArrowUpRight />
+                                En crecimiento
+                            </Badge>
+                            <Badge variant="ghost">Pidiendo mas items vs. período anterior</Badge>
+                        </div>
+                    </div>
+                    <ChartContainer config={chartConfig} className="flex-1 w-full min-h-0">
+                        <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#4AD9C4" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#4AD9C4" stopOpacity={0.1} />
+                                </linearGradient>
+                                <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#0D7C6E" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#0D7C6E" stopOpacity={0.1} />
+                                </linearGradient>
+                                <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#66D9C9" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#66D9C9" stopOpacity={0.1} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="label"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                minTickGap={32}
+                                tickFormatter={(value) => value}
+                            />
+                            <YAxis
+                                yAxisId="left"
+                                orientation="left"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000) return `${(value / 1000).toFixed(0)}k`
+                                    return value.toString()
+                                }}
+                            />
+                            <YAxis
+                                yAxisId="right"
+                                orientation="right"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
+                                    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`
+                                    return `$${value.toString()}`
+                                }}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent labelFormatter={(value) => value} indicator="dot" />}
+                            />
+                            <Area
+                                yAxisId="left"
+                                dataKey="mobile"
+                                type="natural"
+                                fill="url(#fillMobile)"
+                                stroke="#0D7C6E"
+                                stackId="a"
+                            />
+                            <Area
+                                yAxisId="left"
+                                dataKey="desktop"
+                                type="natural"
+                                fill="url(#fillDesktop)"
+                                stroke="#4AD9C4"
+                                stackId="a"
+                            />
+                            <Area
+                                yAxisId="right"
+                                dataKey="price"
+                                type="natural"
+                                fill="url(#fillPrice)"
+                                stroke="#66D9C9"
+                                stackId="b"
+                            />
+                            {/* ELIMINADO: <ChartLegend content={<ChartLegendContent />} /> */}
+                        </AreaChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+        )
+    }
+
     return (
-        <Card className="py-4 flex-1 flex flex-col border-border/40 shadow-sm hover:shadow-md transition-shadow min-h-0 max-h-[300px]">
-            <CardContent className="px-2 pt-0 sm:px-4 sm:pt-3 flex flex-col flex-1 min-h-0">
-                <div className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <Activity className="text-lime-500 h-5 w-5" />
-                            <span>Ciclo de Vida</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2 bg-gray-800 dark:bg-gray-700 text-white dark:text-white">
-                                Cantidad
-                            </Badge>
-                            <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2">
-                                Top productos
-                            </Badge>
-                            <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2">
-                                Frecuencia
-                            </Badge>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                        <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2 text-lime-500 bg-lime-200 dark:bg-gray-700">
-                            <ArrowUpRight />
-                            En crecimiento
-                        </Badge>
-                        <Badge variant="ghost">Pidiendo mas items vs. período anterior</Badge>
-                    </div>
-                </div>
-                <ChartContainer
-                    config={chartConfig}
-                    className="flex-1 w-full min-h-0"
-                >
-                    <AreaChart
-                        data={filteredData}
-                        margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
-                    >
-                        <defs>
-                            <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-desktop)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-desktop)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                            <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                            <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-price)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-price)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                        </defs>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="label"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            minTickGap={32}
-                            tickFormatter={(value) => value}
-                        />
-
-                        {/* EJE Y IZQUIERDO - Cantidad/Número */}
-                        <YAxis
-                            yAxisId="left"
-                            orientation="left"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={(value) => {
-                                if (value >= 1000) {
-                                    return `${(value / 1000).toFixed(0)}`
-                                }
-                                return value.toString()
-                            }}
-                        />
-
-                        {/* EJE Y DERECHO - Precio */}
-                        <YAxis
-                            yAxisId="right"
-                            orientation="right"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={(value) => {
-                                if (value >= 1000000) {
-                                    return `$${(value / 1000000).toFixed(1)}M`
-                                }
-                                if (value >= 1000) {
-                                    return `$${(value / 1000).toFixed(0)}M`
-                                }
-                                return `$${value.toString()}`
-                            }}
-                        />
-
-                        <ChartTooltip
-                            cursor={false}
-                            content={
-                                <ChartTooltipContent
-                                    labelFormatter={(value) => value}
-                                    indicator="dot"
-                                />
-                            }
-                        />
-
-                        {/* Área para cantidad (eje izquierdo) */}
-                        <Area
-                            yAxisId="left"
-                            dataKey="mobile"
-                            type="natural"
-                            fill="url(#fillMobile)"
-                            stroke="var(--color-mobile)"
-                            stackId="a"
-                        />
-                        <Area
-                            yAxisId="left"
-                            dataKey="desktop"
-                            type="natural"
-                            fill="url(#fillDesktop)"
-                            stroke="var(--color-desktop)"
-                            stackId="a"
-                        />
-
-                        {/* Área para precio (eje derecho) */}
-                        <Area
-                            yAxisId="right"
-                            dataKey="price"
-                            type="natural"
-                            fill="url(#fillPrice)"
-                            stroke="var(--color-price)"
-                            stackId="b"
-                        />
-
-                        <ChartLegend content={<ChartLegendContent />} />
-                    </AreaChart>
-                </ChartContainer>
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <Activity className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Ciclo de Vida</span>
             </CardContent>
         </Card>
     )
 }
+
+// CHARTS
+
+// MEMORIAS
+
+function TabMemories({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
+    const handleClick = () =>
+        active === "memorias" ?
+            onClick("memorias")
+            : onClick(null)
+
+    if (active === "memorias") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
+                    <div className="flex flex-1 gap-2 items-center justify-start">
+                        <Brain className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Memorías</span>
+                    </div>
+
+                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Content</div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <Activity className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Ciclo de Vida</span>
+            </CardContent>
+        </Card>
+    )
+}
+
+// MEMORIAS
+
+// ACUERDOS
+
+function TabAcuerdos({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
+    const handleClick = () =>
+        active === "acuerdos" ?
+            onClick("acuerdos")
+            : onClick(null)
+
+    if (active === "acuerdos") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
+                    <div className="flex flex-1 gap-2 items-center justify-start">
+                        <Handshake className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Acuerdos</span>
+                    </div>
+
+                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Content</div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <Handshake className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Acuerdos</span>
+            </CardContent>
+        </Card>
+    )
+}
+
+// ACUERDOS
+
+// PEDIDOS
+
+function TabPedidos({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
+    const handleClick = () =>
+        active === "pedidos" ?
+            onClick("pedidos")
+            : onClick(null)
+
+    if (active === "pedidos") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
+                    <div className="flex flex-1 gap-2 items-center justify-start">
+                        <ShoppingCart className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Pedidos</span>
+                    </div>
+
+                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Pedidos Content</div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <ShoppingCart className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Pedidos</span>
+            </CardContent>
+        </Card>
+    )
+}
+
+// PEDIDOS
