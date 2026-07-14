@@ -2,8 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 
 export default function Page() {
   return (
@@ -20,7 +20,7 @@ export default function Page() {
       >
         {/* Overlay oscuro para legibilidad */}
         <div className="absolute inset-0 bg-black/40 z-0" />
-        
+
         {/* Contenido principal */}
         <div className="relative z-10 grid grid-cols-3 items-center px-20 text-white">
           {/* Columna izquierda - Texto */}
@@ -41,7 +41,7 @@ export default function Page() {
               Conocer más
             </button>
           </div>
-          
+
           {/* Columna derecha - iPhone */}
           <div className="col-span-1 w-full h-[80%] flex items-center justify-center pl-8">
             <div className="relative w-full h-full flex items-center justify-center">
@@ -63,7 +63,7 @@ export default function Page() {
           <AnimationBrandsSlider />
         </div>
       </section>
-      <section className="h-[100vh] bg-blue-500">
+      <section className="h-[100vh]">
         {/* Contenido de la segunda sección */}
       </section>
     </main>
@@ -72,22 +72,22 @@ export default function Page() {
 
 const Navbar = () => {
   return (
-    <nav className="z-50 bg-transparent fixed top-8 w-full flex items-center justify-between h-16 px-30 !text-white">
-      <button>
+    <nav className="z-50 bg-transparent fixed top-8 left-0 right-0 flex items-center justify-between h-16 px-4 md:px-10 lg:px-20 !text-white">
+      <button className="flex-shrink-0">
         <Image
           src="/hawel.webp"
           alt="Logo"
           width={100}
           height={100}
-          className="object-contain h-full w-full"
+          className="object-contain h-full w-auto"
           loading="eager"
+          priority
         />
       </button>
-      <div className="flex items-center justify-end flex-1 gap-12">
-        <Link href="/">Home</Link>
-        <Link href="/sobre-hawel">Sobre Hawel</Link>
-        <Link href="/contacto">Contacto</Link>
-        {/* <Link className="text-xs underline" href="/dashboard">Dashboard</Link> */}
+      <div className="flex items-center justify-end flex-1 gap-4 md:gap-8 lg:gap-12 ml-4">
+        <Link href="/" className="hover:opacity-70 transition-opacity text-sm md:text-base">Home</Link>
+        <Link href="/sobre-hawel" className="hover:opacity-70 transition-opacity text-sm md:text-base">Sobre Hawel</Link>
+        <Link href="/contacto" className="hover:opacity-70 transition-opacity text-sm md:text-base">Contacto</Link>
       </div>
     </nav>
   )
@@ -133,6 +133,8 @@ const AnimationWordHeader = () => {
 }
 
 const AnimationBrandsSlider = () => {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const controls = useAnimation();
   const BRANDS = [
     {
       id: 1,
@@ -194,20 +196,26 @@ const AnimationBrandsSlider = () => {
 
   const duplicatedBrands = [...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS];
 
+  useEffect(() => {
+    const startAnimation = async () => {
+      await controls.start({
+        x: ["0%", "-50%"],
+        transition: {
+          duration: 30,
+          repeat: Infinity,
+          ease: "linear",
+        },
+      });
+    };
+    startAnimation();
+  }, [controls]);
+
   return (
     <div className="w-full h-full flex items-center justify-center overflow-hidden px-4">
       <motion.div
+        ref={sliderRef}
         className="flex items-center gap-20 whitespace-nowrap"
-        animate={{
-          x: ["0%", "-10%"],
-        }}
-        transition={{
-          x: {
-            duration: 10,
-            repeat: Infinity,
-            ease: "linear",
-          },
-        }}
+        animate={controls}
       >
         {duplicatedBrands.map((brand, index) => (
           <div
