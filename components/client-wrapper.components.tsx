@@ -1,0 +1,1062 @@
+// app/clientes/[id]/ClientWrapper.tsx
+"use client";
+
+import { useState } from "react";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Activity, AlertCircle, ArrowLeft, Box, Calendar as CalendarIcon, Clock, DollarSign, Handshake, MessageSquare, Pencil, ShoppingCart, TrendingUp, Truck } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, BarChart, Bar, LineChart, Line } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { useRouter } from "next/navigation";
+import { getDashboardRange, type DashboardRange } from "@/lib/dashboard-data";
+import { es } from "date-fns/locale";
+
+// Definir interfaces
+enum Filter {
+    All = "all",
+    Day = "day",
+    AtRisk = "at_risk"
+}
+
+interface DetailClient {
+    id: string;
+    name: string;
+    location: string;
+    status: Filter;
+    lastPurchaseDays?: number;
+    dateEntrega?: string;
+    cxd: string;
+    details?: {
+        clients: { name: string; quantity: number; unitPrice: number; total: number }[];
+    };
+}
+
+// Props para el Client Wrapper
+interface ClientWrapperProps {
+    client: DetailClient;
+}
+
+// ============================================================
+// KPI CARD
+// ============================================================
+interface KPIProps {
+    title: string;
+    value: string;
+    subtitle?: string;
+    icon?: React.ReactNode;
+    trend?: {
+        type: "up" | "down";
+    };
+}
+
+function KPICard({ title, value, subtitle, icon }: KPIProps) {
+    return (
+        <Card className="border-border/40 shadow-lg hover:shadow-md transition-shadow py-4 gap-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                    {title}
+                </CardTitle>
+                {icon && <div className="h-auto w-auto text-emerald-600 border border-emerald-200/20 p-1 bg-emerald-50 dark:bg-emerald-950/20 rounded-md">{icon}</div>}
+            </CardHeader>
+            <CardContent className="pt-1">
+                <div className="text-xl font-bold leading-tight">
+                    {value}
+                </div>
+                {subtitle ? (
+                    <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>
+                ) : null}
+            </CardContent>
+        </Card>
+    );
+}
+
+// ============================================================
+// FILTERS - Con opciones 3M, 6M, 9M y Rango
+// ============================================================
+export type RangePeriod = "day" | "week" | "month" | "range";
+
+interface FiltersProps {
+    value?: RangePeriod;
+    onRangeChange?: (range: { start: Date; end: Date; period: RangePeriod }) => void;
+    variant?: "default" | "ampliado";
+}
+
+function Filters({ value, onRangeChange, variant = "default" }: FiltersProps) {
+    const [internalPeriod, setInternalPeriod] = useState<RangePeriod>("day");
+    const [customRange, setCustomRange] = useState<{
+        start: Date | undefined;
+        end: Date | undefined;
+    }>({
+        start: undefined,
+        end: undefined,
+    });
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+    const selectedPeriod = value ?? internalPeriod;
+    const selectedRange =
+        selectedPeriod === "range"
+            ? customRange
+            : getDashboardRange(selectedPeriod);
+
+    const periods = [
+        { label: "3M", value: "day" as const },
+        { label: "6M", value: "week" as const },
+        { label: "9M", value: "month" as const },
+    ];
+
+    const handlePeriodClick = (period: RangePeriod) => {
+        const range = getDashboardRange(period);
+        setInternalPeriod(period);
+        onRangeChange?.(range);
+    };
+
+    const handleDateRangeSelect = (range: { from: Date; to: Date }) => {
+        const nextRange = { start: range.from, end: range.to, period: "range" as const };
+        setCustomRange({ start: range.from, end: range.to });
+        setInternalPeriod("range");
+        onRangeChange?.(nextRange);
+        setIsCalendarOpen(false);
+    };
+
+    const isActive = (period: RangePeriod) => selectedPeriod === period;
+
+    // Variante ampliada (para el cliente detail)
+    if (variant === "ampliado") {
+        return (
+            <div className="flex items-center gap-1 p-1 bg-gray-100 dark:bg-zinc-800 rounded-lg">
+                {periods.map((period) => (
+                    <Button
+                        key={period.value}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                            "h-7 px-3 py-0 text-xs font-medium rounded-md transition-all",
+                            isActive(period.value)
+                                ? "bg-white dark:bg-gray-700 shadow-sm text-emerald-600 dark:text-emerald-400"
+                                : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        )}
+                        onClick={() => handlePeriodClick(period.value)}
+                    >
+                        {period.label}
+                    </Button>
+                ))}
+
+                <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                                "h-7 px-3 py-0 text-xs font-medium rounded-md transition-all",
+                                isActive("range")
+                                    ? "bg-white dark:bg-gray-700 shadow-sm text-emerald-600 dark:text-emerald-400"
+                                    : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                            )}
+                        >
+                            <CalendarIcon className="h-3.5 w-3.5" />
+                            <span className="hidden md:inline">Rango</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="range"
+                            selected={{
+                                from: selectedRange.start,
+                                to: selectedRange.end,
+                            }}
+                            onSelect={(range) => {
+                                if (range?.from && range?.to) {
+                                    handleDateRangeSelect(range as { from: Date; to: Date });
+                                }
+                            }}
+                            numberOfMonths={2}
+                            locale={es}
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
+        );
+    }
+
+    // Variante default (para la lista de clientes)
+    return (
+        <Card className="w-auto ml-auto border-border/40 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
+            <div className="flex items-center gap-2 p-0 rounded-2xl w-full justify-between md:w-fit md:ml-auto">
+                {periods.map((period) => (
+                    <Button
+                        key={period.value}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                            "h-8 px-4 py-1 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-800",
+                            isActive(period.value)
+                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-2xl"
+                                : ""
+                        )}
+                        onClick={() => handlePeriodClick(period.value)}
+                    >
+                        {period.label}
+                    </Button>
+                ))}
+
+                <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                                "h-8 px-4 py-1 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-800",
+                                isActive("range")
+                                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-2xl"
+                                    : ""
+                            )}
+                        >
+                            <CalendarIcon className="h-3.5 w-3.5" />
+                            <span className="hidden md:inline">Rango</span>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="range"
+                            selected={{
+                                from: selectedRange.start,
+                                to: selectedRange.end,
+                            }}
+                            onSelect={(range) => {
+                                if (range?.from && range?.to) {
+                                    handleDateRangeSelect(range as { from: Date; to: Date });
+                                }
+                            }}
+                            numberOfMonths={2}
+                            locale={es}
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
+        </Card>
+    );
+}
+
+// ============================================================
+// TIPO DE GRÁFICO Y DATOS MOCK
+// ============================================================
+type ChartView = "topProductos" | "cantidad" | "frecuencia";
+
+interface ChartDataItem {
+    label: string;
+    value: number;
+    [key: string]: string | number;
+}
+
+// Datos mock para cada vista
+const mockData: Record<ChartView, ChartDataItem[]> = {
+    // TAB 1: TOP PRODUCTOS - Ranking de artículos más comprados
+    topProductos: [
+        { label: "01/07/2026", value: 450 },
+        { label: "02/07/2026", value: 380 },
+        { label: "03/07/2026", value: 320 },
+        { label: "04/07/2026", value: 280 },
+        { label: "05/07/2026", value: 200 },
+        { label: "06/07/2026", value: 150 },
+        { label: "07/07/2026", value: 100 },
+        { label: "08/07/2026", value: 85 },
+        { label: "09/07/2026", value: 70 },
+        { label: "10/07/2026", value: 55 },
+    ],
+    // TAB 2: CANTIDAD - Curva de bultos/unidades totales por mes
+    cantidad: [
+        { label: "Ene", value: 1200 },
+        { label: "Feb", value: 900 },
+        { label: "Mar", value: 1500 },
+        { label: "Abr", value: 1800 },
+        { label: "May", value: 1400 },
+        { label: "Jun", value: 2100 },
+        { label: "Jul", value: 1600 },
+        { label: "Ago", value: 1900 },
+        { label: "Sep", value: 2200 },
+        { label: "Oct", value: 2000 },
+        { label: "Nov", value: 2400 },
+        { label: "Dic", value: 2800 },
+    ],
+    // TAB 3: FRECUENCIA - Evolución de días entre pedidos
+    frecuencia: [
+        { label: "Sem 1", value: 12 },
+        { label: "Sem 2", value: 10 },
+        { label: "Sem 3", value: 8 },
+        { label: "Sem 4", value: 15 },
+        { label: "Sem 5", value: 7 },
+        { label: "Sem 6", value: 9 },
+        { label: "Sem 7", value: 11 },
+        { label: "Sem 8", value: 6 },
+        { label: "Sem 9", value: 8 },
+        { label: "Sem 10", value: 5 },
+        { label: "Sem 11", value: 7 },
+        { label: "Sem 12", value: 4 },
+    ],
+};
+
+// Configuración de colores por vista
+const chartColors: Record<ChartView, { primary: string; secondary: string; gradient: string }> = {
+    topProductos: {
+        primary: "#F59E0B",
+        secondary: "#D97706",
+        gradient: "fillTopProductos",
+    },
+    cantidad: {
+        primary: "#4AD9C4",
+        secondary: "#0D7C6E",
+        gradient: "fillCantidad",
+    },
+    frecuencia: {
+        primary: "#8B5CF6",
+        secondary: "#6D28D9",
+        gradient: "fillFrecuencia",
+    },
+};
+
+// Configuración de títulos y descripciones
+const chartConfigs: Record<ChartView, { title: string; description: string; badge: string; trend: string }> = {
+    topProductos: {
+        title: "Top Productos",
+        description: "Ranking de artículos más comprados",
+        badge: "↑ En crecimiento",
+        trend: "Pidiendo más items vs. período anterior",
+    },
+    cantidad: {
+        title: "Cantidad",
+        description: "Curva de bultos/unidades totales",
+        badge: "↑ 23% vs mes anterior",
+        trend: "2.800 unidades en diciembre",
+    },
+    frecuencia: {
+        title: "Frecuencia",
+        description: "Evolución de días entre pedidos",
+        badge: "↓ 33% de separación",
+        trend: "Promedio: 8.5 días",
+    },
+};
+
+// ============================================================
+// CHARTS
+// ============================================================
+function TabCharts({
+    active,
+    onClick
+}: {
+    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
+    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
+}) {
+    const [selectedView, setSelectedView] = useState<ChartView>("topProductos");
+    const [chartType, setChartType] = useState<"area" | "bar" | "line">("line");
+
+    const currentData = mockData[selectedView];
+    const colors = chartColors[selectedView];
+    const config = chartConfigs[selectedView];
+
+    const handleViewChange = (view: ChartView) => {
+        setSelectedView(view);
+        // Cambiar tipo de gráfico según la vista
+        if (view === "topProductos") {
+            setChartType("line");
+        } else if (view === "cantidad") {
+            setChartType("area");
+        } else if (view === "frecuencia") {
+            setChartType("line");
+        }
+    };
+
+    const handleClick = () =>
+        active === "charts" ?
+            onClick("charts")
+            : onClick(null);
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1 min-h-0 max-h-[400px]" onClick={() => handleClick()}>
+            <CardContent className="flex flex-col gap-2 justify-between flex-1 min-h-0">
+                <div className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                            <Activity className="text-emerald-500 h-5 w-5" />
+                            <span>Ciclo de Vida</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "p-3 text-medium flex items-center gap-2 cursor-pointer transition-all",
+                                    selectedView === "topProductos"
+                                        ? "bg-gray-800 dark:bg-zinc-600 text-white dark:text-white"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleViewChange("topProductos");
+                                }}
+                            >
+                                Top Productos
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "p-3 text-medium flex items-center gap-2 cursor-pointer transition-all",
+                                    selectedView === "cantidad"
+                                        ? "bg-gray-800 dark:bg-zinc-600 text-white dark:text-white"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleViewChange("cantidad");
+                                }}
+                            >
+                                Cantidad
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "p-3 text-medium flex items-center gap-2 cursor-pointer transition-all",
+                                    selectedView === "frecuencia"
+                                        ? "bg-gray-800 dark:bg-zinc-600 text-white dark:text-white"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleViewChange("frecuencia");
+                                }}
+                            >
+                                Frecuencia
+                            </Badge>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                        <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900 dark:text-emerald-400">
+                            {config.badge}
+                        </Badge>
+                        <Badge variant="ghost">{config.trend}</Badge>
+                    </div>
+                </div>
+
+                <ChartContainer config={{
+                    value: {
+                        label: "Valor",
+                        color: colors.primary,
+                    }
+                }} className="flex-1 w-full min-h-0">
+                    {chartType === "bar" && (
+                        <BarChart data={currentData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="label"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                minTickGap={32}
+                                tickFormatter={(value) => value}
+                            />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
+                                    return value.toString();
+                                }}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent labelFormatter={(value) => value} indicator="dot" />}
+                            />
+                            <Bar
+                                dataKey="value"
+                                fill={colors.primary}
+                                radius={[4, 4, 0, 0]}
+                            />
+                        </BarChart>
+                    )}
+
+                    {chartType === "area" && (
+                        <AreaChart data={currentData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id={colors.gradient} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={colors.primary} stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor={colors.primary} stopOpacity={0.1} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="label"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                minTickGap={32}
+                                tickFormatter={(value) => value}
+                            />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
+                                    return value.toString();
+                                }}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent labelFormatter={(value) => value} indicator="dot" />}
+                            />
+                            <Area
+                                dataKey="value"
+                                type="natural"
+                                fill={`url(#${colors.gradient})`}
+                                stroke={colors.primary}
+                            />
+                        </AreaChart>
+                    )}
+
+                    {chartType === "line" && (
+                        <LineChart data={currentData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="label"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                minTickGap={32}
+                                tickFormatter={(value) => value}
+                            />
+                            <YAxis
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                tickFormatter={(value) => {
+                                    if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
+                                    return value.toString();
+                                }}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent labelFormatter={(value) => value} indicator="dot" />}
+                            />
+                            <Line
+                                dataKey="value"
+                                type="monotone"
+                                stroke={colors.primary}
+                                strokeWidth={2}
+                                dot={{ fill: colors.primary }}
+                            />
+                        </LineChart>
+                    )}
+                </ChartContainer>
+            </CardContent>
+        </Card>
+    );
+}
+
+interface TimelineEvent {
+    id: string;
+    time: string;
+    category: "stock" | "logistica" | "anomalia";
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+    color: string;
+}
+
+const timelineEvents: TimelineEvent[] = [
+    {
+        id: "1",
+        time: "⏱️ Hace 2 horas",
+        category: "stock",
+        title: "Ajuste de Pedido",
+        description: "Confirmó en el chat que para el pedido de hoy no se incluya la variedad de Quinoa Sin Sal.",
+        icon: <Box className="h-4 w-4" />,
+        color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    },
+    {
+        id: "2",
+        time: "⏱️ Hace 5 horas",
+        category: "logistica",
+        title: "Cambio de Dirección",
+        description: "Indicó que esta semana la descarga debe realizarse en el depósito secundario de la vuelta debido a obras en el ingreso principal.",
+        icon: <Truck className="h-4 w-4" />,
+        color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    },
+    {
+        id: "3",
+        time: "⏱️ Hace 1 día",
+        category: "stock",
+        title: "Sustitución de Producto",
+        description: "Rechazó el reemplazo automático de marca en el chat y exigió esperar a que entre mercadería el jueves.",
+        icon: <Box className="h-4 w-4" />,
+        color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    },
+    {
+        id: "4",
+        time: "⏱️ Hace 2 días",
+        category: "logistica",
+        title: "Excepción de Entrega",
+        description: "No habrá personal disponible para recibir al camión durante el turno tarde.",
+        icon: <Truck className="h-4 w-4" />,
+        color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    },
+    {
+        id: "5",
+        time: "⏱️ Hace 3 días",
+        category: "stock",
+        title: "Error de Carga",
+        description: "Aclaró que se solicitaron 100 unidades por error en el bot y que la cantidad real requerida es de 10 unidades.",
+        icon: <Box className="h-4 w-4" />,
+        color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    },
+    {
+        id: "6",
+        time: "⏱️ Hace 4 días",
+        category: "logistica",
+        title: "Restricción de Vehículo",
+        description: "Advirtió que solo pueden ingresar camiones de tamaño chico o mediano debido a la estrechez de la calle de acceso.",
+        icon: <Truck className="h-4 w-4" />,
+        color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    },
+    {
+        id: "7",
+        time: "🚨 Hace 12 días",
+        category: "anomalia",
+        title: "Cierre Temporal",
+        description: "Avisó que el local comercial permanecerá cerrado por vacaciones del personal desde el 15 al 22 de julio.",
+        icon: <AlertCircle className="h-4 w-4" />,
+        color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    },
+    {
+        id: "8",
+        time: "🚨 Hace 14 días",
+        category: "anomalia",
+        title: "Promesa de Pago",
+        description: "Solicitó reprogramar el vencimiento de la factura pendiente y se comprometió a realizar la transferencia el lunes a primera hora.",
+        icon: <AlertCircle className="h-4 w-4" />,
+        color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    },
+];
+
+// Filtros para cronología
+type TimelineFilter = "todas" | "stock" | "logistica" | "anomalia";
+
+function TabCronologia({
+    active,
+    onClick
+}: {
+    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
+    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
+}) {
+    const [filter, setFilter] = useState<TimelineFilter>("todas");
+
+    const filteredEvents = timelineEvents.filter(event => {
+        if (filter === "todas") return true;
+        return event.category === filter;
+    });
+
+    const handleClick = () =>
+        active === "cronologia" ?
+            onClick("cronologia")
+            : onClick(null);
+
+    if (active === "cronologia") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Clock className="text-emerald-500 h-5 w-5" />
+                            <span className="text-md font-semibold">Cronología</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "cursor-pointer transition-all",
+                                    filter === "todas"
+                                        ? "bg-emerald-800 dark:bg-emerald-600 text-white dark:text-white"
+                                        : "hover:bg-emerald-200 dark:hover:bg-emerald-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilter("todas");
+                                }}
+                            >
+                                Todas
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "cursor-pointer transition-all",
+                                    filter === "stock"
+                                        ? "bg-emerald-600 text-white"
+                                        : "hover:bg-emerald-200 dark:hover:bg-emerald-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilter("stock");
+                                }}
+                            >
+                                Stock
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "cursor-pointer transition-all",
+                                    filter === "logistica"
+                                        ? "bg-emerald-600 text-white"
+                                        : "hover:bg-emerald-200 dark:hover:bg-emerald-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilter("logistica");
+                                }}
+                            >
+                                Logística
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "cursor-pointer transition-all",
+                                    filter === "anomalia"
+                                        ? "bg-emerald-600 text-white"
+                                        : "hover:bg-emerald-200 dark:hover:bg-emerald-700"
+                                )}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilter("anomalia");
+                                }}
+                            >
+                                Anomalía
+                            </Badge>
+                        </div>
+                    </div>
+
+                    <div className="flex-1 overflow-auto max-h-[300px] space-y-3 pr-2">
+                        {filteredEvents.map((event) => (
+                            <div key={event.id} className="flex gap-3 p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                                <div className={cn("flex-shrink-0 p-2 rounded-full h-8 w-8 flex items-center justify-center", event.color)}>
+                                    {event.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-semibold">{event.title}</span>
+                                        <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">{event.time}</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mt-1">{event.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <Clock className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Cronología</span>
+            </CardContent>
+        </Card>
+    );
+}
+
+// ============================================================
+// ACUERDOS
+// ============================================================
+interface Acuerdo {
+    id: string;
+    date: string;
+    title: string;
+    description: string;
+    status: "activo" | "pendiente" | "vencido";
+}
+
+const acuerdosMock: Acuerdo[] = [
+    {
+        id: "1",
+        date: "15/07/2026",
+        title: "Acuerdo de Pago",
+        description: "Se estableció un plan de pago en 3 cuotas para la factura pendiente N° 12345.",
+        status: "activo",
+    },
+    {
+        id: "2",
+        date: "10/07/2026",
+        title: "Descuento por Volumen",
+        description: "Se otorgó un 10% de descuento en pedidos superiores a $500.000.",
+        status: "activo",
+    },
+    {
+        id: "3",
+        date: "05/07/2026",
+        title: "Renovación de Contrato",
+        description: "Se renovó el contrato de distribución por 6 meses con condiciones preferenciales.",
+        status: "pendiente",
+    },
+    {
+        id: "4",
+        date: "28/06/2026",
+        title: "Acuerdo de Logística",
+        description: "Se acordó que los pedidos se entregarán en el depósito secundario los días martes y jueves.",
+        status: "vencido",
+    },
+];
+
+function TabAcuerdos({ 
+    active, 
+    onClick 
+}: { 
+    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null; 
+    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
+}) {
+    const handleClick = () =>
+        active === "acuerdos" ?
+            onClick("acuerdos")
+            : onClick(null);
+
+    const getStatusBadge = (status: Acuerdo["status"]) => {
+        switch (status) {
+            case "activo":
+                return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Activo</Badge>;
+            case "pendiente":
+                return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Pendiente</Badge>;
+            case "vencido":
+                return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Vencido</Badge>;
+        }
+    };
+
+    if (active === "acuerdos") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
+                    <div className="flex items-center gap-2">
+                        <Handshake className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Acuerdos</span>
+                    </div>
+
+                    <div className="flex-1 overflow-auto max-h-[300px] space-y-3 pr-2">
+                        {acuerdosMock.map((acuerdo) => (
+                            <div key={acuerdo.id} className="flex flex-col p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-semibold">{acuerdo.title}</span>
+                                    {getStatusBadge(acuerdo.status)}
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">{acuerdo.description}</p>
+                                <span className="text-xs text-muted-foreground mt-2">{acuerdo.date}</span>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <Handshake className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Acuerdos</span>
+            </CardContent>
+        </Card>
+    );
+}
+
+// ============================================================
+// PEDIDOS
+// ============================================================
+interface Pedido {
+    id: string;
+    date: string;
+    total: string;
+    items: number;
+    status: "completado" | "en_proceso" | "cancelado";
+}
+
+const pedidosMock: Pedido[] = [
+    { id: "PED-001", date: "12/07/2026", total: "$45.230", items: 12, status: "completado" },
+    { id: "PED-002", date: "08/07/2026", total: "$32.100", items: 8, status: "completado" },
+    { id: "PED-003", date: "03/07/2026", total: "$67.890", items: 18, status: "en_proceso" },
+    { id: "PED-004", date: "28/06/2026", total: "$23.450", items: 6, status: "completado" },
+    { id: "PED-005", date: "20/06/2026", total: "$89.200", items: 24, status: "cancelado" },
+    { id: "PED-006", date: "15/06/2026", total: "$56.780", items: 15, status: "completado" },
+];
+
+function TabPedidos({ 
+    active, 
+    onClick 
+}: { 
+    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null; 
+    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
+}) {
+    const handleClick = () =>
+        active === "pedidos" ?
+            onClick("pedidos")
+            : onClick(null);
+
+    const getStatusBadge = (status: Pedido["status"]) => {
+        switch (status) {
+            case "completado":
+                return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Completado</Badge>;
+            case "en_proceso":
+                return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">En Proceso</Badge>;
+            case "cancelado":
+                return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Cancelado</Badge>;
+        }
+    };
+
+    if (active === "pedidos") {
+        return (
+            <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
+                <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
+                    <div className="flex items-center gap-2">
+                        <ShoppingCart className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Pedidos</span>
+                    </div>
+
+                    <div className="flex-1 overflow-auto max-h-[300px] space-y-3 pr-2">
+                        {pedidosMock.map((pedido) => (
+                            <div key={pedido.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-semibold">{pedido.id}</span>
+                                        {getStatusBadge(pedido.status)}
+                                    </div>
+                                    <div className="flex items-center gap-4 mt-1">
+                                        <span className="text-sm text-muted-foreground">{pedido.date}</span>
+                                        <span className="text-sm text-muted-foreground">{pedido.items} items</span>
+                                    </div>
+                                </div>
+                                <span className="text-sm font-bold">{pedido.total}</span>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
+            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
+                <ShoppingCart className="text-emerald-500 h-5 w-5" />
+                <span className="text-md font-semibold">Pedidos</span>
+            </CardContent>
+        </Card>
+    );
+}
+
+// ============================================================
+// COLLAPSIBLE CLIENT DETAIL
+// ============================================================
+const CollapsibleClientDetail = ({ client }: { client: DetailClient }) => {
+    const router = useRouter();
+    const [range, setRange] = useState<DashboardRange>(() => getDashboardRange("month"));
+    const [activeTab, setActiveTab] = useState<"charts" | "cronologia" | "acuerdos" | "pedidos">("charts");
+
+    const KPIs = [
+        {
+            title: "Revenue Total",
+            icon: <DollarSign className="h-5 w-5" />,
+            subtitle: "desde sept. 2025",
+            value: "$63.3M"
+        },
+        {
+            title: "Ticket Promedio",
+            icon: <TrendingUp className="h-5 w-5" />,
+            subtitle: "53 pedidos",
+            value: "$1.193.994"
+        },
+        {
+            title: "Cant. Promedio",
+            icon: <Box className="h-5 w-5" />,
+            subtitle: "por pedido",
+            value: "456.2"
+        },
+        {
+            title: "Frecuencia",
+            icon: <CalendarIcon className="h-5 w-5" />,
+            subtitle: "Último: Hace 8 días",
+            value: "c/9d"
+        },
+    ];
+
+    const handleRangeChange = (nextRange: { start: Date; end: Date; period: RangePeriod }) => {
+        setRange(nextRange);
+    };
+
+    return (
+        <Card className="p-4 gap-3 flex flex-col !border-transparent bg-transparent ring-0" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                    <span className="font-medium flex items-center gap-4 text-sm">
+                        {/* volver atras */}
+                        <Button variant="ghost" size="icon" className="p-1" onClick={() => router.push("/clientes")}>
+                            <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        {client.name}
+                        <Badge variant="default" className="bg-gray-800 dark:bg-gray-700 text-white dark:text-white">Activo</Badge>
+                        <span className="text-xs font-light">Distribuidora Premium - José León Suarez </span>
+                        <span className="text-xs flex items-center font-light">
+                            <CalendarIcon className="h-4 w-4 mr-1" />
+                            <span className="text-xs font-light">29 ago</span>
+                        </span>
+                    </span>
+
+                    <div className="flex ml-auto gap-2">
+                        <Filters
+                            value={range.period}
+                            onRangeChange={handleRangeChange}
+                            variant="ampliado"
+                        />
+                        <Button variant="outline">
+                            <MessageSquare />
+                        </Button>
+                        <Button variant="secondary" className="text-black dark:text-white gap-2">
+                            <Pencil />
+                            Editar
+                        </Button>
+                    </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-4 gap-4">
+                    {KPIs.map((item, index) => (
+                        <KPICard
+                            key={index}
+                            {...item}
+                        />
+                    ))}
+                </div>
+
+                <TabCharts active={activeTab} onClick={() => setActiveTab("charts")} />
+
+                <TabCronologia active={activeTab} onClick={() => setActiveTab("cronologia")} />
+
+                <TabAcuerdos active={activeTab} onClick={() => setActiveTab("acuerdos")} />
+
+                <TabPedidos active={activeTab} onClick={() => setActiveTab("pedidos")} />
+            </div>
+        </Card>
+    );
+};
+
+// ============================================================
+// COMPONENTE PRINCIPAL - EXPORTADO POR DEFECTO
+// ============================================================
+export default function ClientWrapper({ client }: ClientWrapperProps) {
+    return <CollapsibleClientDetail client={client} />;
+}

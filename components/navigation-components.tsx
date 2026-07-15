@@ -8,7 +8,7 @@ import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 
 const menuItems = [
-    { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+    { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     { title: "CRM", icon: Users, href: "/crm" },
     { title: "Pedidos", icon: ShoppingCart, href: "/pedidos" },
     { title: "WhatsApp", icon: MessageSquare, href: "/whatsapp" },

@@ -88,6 +88,7 @@ const Navbar = () => {
         <Link href="/" className="hover:opacity-70 transition-opacity text-sm md:text-base">Home</Link>
         <Link href="/sobre-hawel" className="hover:opacity-70 transition-opacity text-sm md:text-base">Sobre Hawel</Link>
         <Link href="/contacto" className="hover:opacity-70 transition-opacity text-sm md:text-base">Contacto</Link>
+        <Link href="/dashboard" className="hover:opacity-70 transition-opacity text-xs">Dashboard</Link>
       </div>
     </nav>
   )

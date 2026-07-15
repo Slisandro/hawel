@@ -1,24 +1,15 @@
 "use client"
 import { useState } from "react"
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle
+    Card
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Activity, ArrowUpRight, Box, Brain, Calendar, ChevronDown, ChevronUp, DollarSign, Handshake, MessageSquare, Pencil, Search, ShoppingCart, TrendingUp } from "lucide-react"
+import { Search} from "lucide-react"
 import { AppNavbar } from "@/components/navbar.components"
 import { cn } from "@/lib/utils"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { useRouter } from "next/navigation"
 
 interface DetailClient {
     id: string;
@@ -82,36 +73,9 @@ const mockClients: DetailClient[] = [
     }
 ]
 
-const KPIs = [
-    {
-        title: "Revenue Total",
-        icon: <DollarSign className="h-5 w-5" />,
-        subtitle: "desde sept. 2025",
-        value: "$63.3M"
-    },
-    {
-        title: "Ticket Promedio",
-        icon: <TrendingUp className="h-5 w-5" />,
-        subtitle: "53 pedidos",
-        value: "$1.193.994"
-    },
-    {
-        title: "Cant. Promedio",
-        icon: <Box className="h-5 w-5" />,
-        subtitle: "por pedido",
-        value: "456.2"
-    },
-    {
-        title: "Frecuencia",
-        icon: <Calendar className="h-5 w-5" />,
-        subtitle: "Último: Hace 8 días",
-        value: "c/9d"
-    },
-]
-
 export default function ClientsPanel() {
+    const router = useRouter();
     const [clients] = useState<DetailClient[]>(mockClients)
-    const [expandedId, setExpandedId] = useState<string | null>(null)
     const [activeFilter, setActiveFilter] = useState<Filter>(Filter.All)
 
     const filteredClients = clients.filter(client => {
@@ -210,92 +174,58 @@ export default function ClientsPanel() {
                             <div className="col-span-2">
                                 <span className="text-sm font-bold text-muted-foreground">Localidad / Zona</span>
                             </div>
-                            <div className="col-span-1">
+                            <div className="col-span-2">
                                 <span className="text-sm font-bold text-muted-foreground">c/X d</span>
                             </div>
                             <div className="col-span-2">
                                 <span className="text-sm font-bold text-muted-foreground">Estado</span>
                             </div>
-                            <div className="col-span-2">
+                            <div className="col-span-2 text-end">
                                 <span className="text-sm font-bold text-muted-foreground">Última Compra</span>
-                            </div>
-                            <div className="col-span-1 text-right">
-                                <span className="text-sm font-bold text-muted-foreground">Acción</span>
                             </div>
                         </div>
 
-                        {/* LISTA DE CLIENTES */}
-                        {filteredClients.map((client) => (
-                            <Collapsible
-                                key={client.id}
-                                open={expandedId === client.id}
-                            >
+                        <div className="flex-1 overflow-auto gap-2 flex flex-col px-1 pt-1">
+                            {/* LISTA DE CLIENTES */}
+                            {filteredClients.map((client) => (
                                 <Card
-                                    className="shadow-sm transition-shadow p-0 ring-0 border gap-0"
-                                    onClick={() =>
-                                        setExpandedId(expandedId === client.id ? null : client.id)
-                                    }
+                                    key={client.id}
+                                    className="p-3 w-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                                    onClick={() => router.push(`/clientes/${client.id}`)}
                                 >
-                                    <CollapsibleTrigger
-                                        asChild
-                                        className={
-                                            cn("w-full h-full hover:bg-gray-100 dark:hover:bg-gray-800",
-                                                expandedId === client.id ? "bg-gray-100 dark:bg-gray-800" : "")
-                                        }
-                                    >
-                                        <div className="cursor-pointer">
-                                            <div className="grid grid-cols-12 gap-2 items-center px-4 py-2">
-                                                <div className="col-span-1">
-                                                    <p className="text-sm font-semibold">{client.id}</p>
-                                                </div>
-                                                <div className="col-span-3">
-                                                    <p className="text-sm font-semibold">{client.name}</p>
-                                                </div>
-                                                <div className="col-span-2">
-                                                    <p className="text-sm font-semibold">{client.location}</p>
-                                                </div>
-                                                <div className="col-span-1">
-                                                    <p className="text-sm font-semibold">{client.cxd}</p>
-                                                </div>
-                                                <div className="col-span-2">
-                                                    {getStatusBadge(client.status)}
-                                                </div>
-                                                <div className="col-span-2">
-                                                    <p className="text-sm font-semibold">
-                                                        {client.lastPurchaseDays !== undefined
-                                                            ? `${client.lastPurchaseDays} días`
-                                                            : "N/A"}
-                                                    </p>
-                                                </div>
-                                                <div className="col-span-1 flex justify-end">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setExpandedId(expandedId === client.id ? null : client.id)
-                                                        }}
-                                                    >
-                                                        {expandedId === client.id ? (
-                                                            <ChevronUp className="h-4 w-4" />
-                                                        ) : (
-                                                            <ChevronDown className="h-4 w-4" />
-                                                        )}
-                                                    </Button>
-                                                </div>
+                                    <div className="cursor-pointer">
+                                        <div className="grid grid-cols-12 gap-2 items-center px-4 py-2">
+                                            <div className="col-span-1">
+                                                <p className="text-sm font-semibold">{client.id}</p>
+                                            </div>
+                                            <div className="col-span-3">
+                                                <p className="text-sm font-semibold">{client.name}</p>
+                                            </div>
+                                            <div className="col-span-2">
+                                                <p className="text-sm font-semibold">{client.location}</p>
+                                            </div>
+                                            <div className="col-span-2">
+                                                <p className="text-sm font-semibold">{client.cxd}</p>
+                                            </div>
+                                            <div className="col-span-2">
+                                                {getStatusBadge(client.status)}
+                                            </div>
+                                            <div className="col-span-2 flex items-center justify-end">
+                                                <p className="text-sm font-semibold">
+                                                    {client.lastPurchaseDays !== undefined
+                                                        ? `${client.lastPurchaseDays} días`
+                                                        : "N/A"}
+                                                </p>
                                             </div>
                                         </div>
-                                    </CollapsibleTrigger>
-
-                                    <CollapsibleClientDetail client={client} />
+                                    </div>
                                 </Card>
-                            </Collapsible>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </main >
+        </div >
     )
 }
 
@@ -374,360 +304,3 @@ function Filters({
 }
 
 // FILTERS
-
-// KPI CARD
-interface KPIProps {
-    title: string
-    value: string
-    subtitle?: string
-    icon?: React.ReactNode
-    trend?: {
-        type: "up" | "down"
-    }
-}
-
-function KPICard({ title, value, subtitle, icon }: KPIProps) {
-    return (
-        <Card className="border-border/40 shadow-lg hover:shadow-md transition-shadow py-4 gap-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-                <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                    {title}
-                </CardTitle>
-                {icon && <div className="h-auto w-auto text-emerald-600 border border-emerald-200/20 p-1 bg-emerald-50 dark:bg-emerald-950/20 rounded-md">{icon}</div>}
-            </CardHeader>
-            <CardContent className="pt-1">
-                <div className={"text-xl font-bold leading-tight"}>
-                    {value}
-                </div>
-                {subtitle ? (
-                    <div className="mt-1 text-xs text-muted-foreground">{subtitle}</div>
-                ) : null}
-            </CardContent>
-        </Card>
-    )
-}
-
-// KPI CARD
-
-// COLLAPSIBLE CLIENT DETAIL
-
-const CollapsibleClientDetail = ({ client }: { client: DetailClient }) => {
-    const [activeFilter, setActiveFilter] = useState<Filter>(Filter.All)
-    const [activeTab, setActiveTab] = useState<"charts" | "memorias" | "acuerdos" | "pedidos">("charts")
-
-    return (
-        <CollapsibleContent className="p-4 gap-3 flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-4">
-                    <span className="font-medium flex items-center gap-2 text-sm">
-                        {client.name}
-                        <Badge variant="default" className="bg-gray-800 dark:bg-gray-700 text-white dark:text-white">Activo</Badge>
-                        <span className="text-xs font-light">Distribuidora Premium - José León Suarez </span>
-                        <span className="text-xs flex items-center font-light">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            <span className="text-xs font-light">29 ago</span>
-                        </span>
-                    </span>
-
-                    <div className="flex ml-auto gap-2">
-                        <Filters
-                            value={activeFilter}
-                            onFilterChange={setActiveFilter}
-                            variant="ampliado"
-                        />
-                        <Button variant="outline">
-                            <MessageSquare />
-                        </Button>
-                        <Button variant="secondary" className="text-black dark:text-white gap-2">
-                            <Pencil />
-                            Editar
-                        </Button>
-                    </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-4 gap-4">
-                    {KPIs.map((item, index) => (
-                        <KPICard
-                            key={index}
-                            {...item}
-                        />
-                    ))}
-                </div>
-
-                <TabCharts active={activeTab} onClick={() => setActiveTab("charts")} />
-
-                <TabMemories active={activeTab} onClick={() => setActiveTab("memorias")} />
-
-                <TabAcuerdos active={activeTab} onClick={() => setActiveTab("acuerdos")} />
-
-                <TabPedidos active={activeTab} onClick={() => setActiveTab("pedidos")} />
-            </div>
-        </CollapsibleContent>
-    )
-}
-
-// TABS 
-
-// CHARTS
-
-const chartConfig = {
-    desktop: {
-        label: "Cantidad",
-        color: "#4AD9C4", // Turquesa principal
-    },
-    mobile: {
-        label: "Frecuencia",
-        color: "#0D7C6E", // Turquesa oscuro
-    },
-    price: {
-        label: "Precio",
-        color: "#66D9C9", // Turquesa medio
-    }
-} satisfies ChartConfig
-
-function TabCharts({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
-    const filteredData = [
-        { label: "2026-06-01", desktop: 4000, mobile: 2400, price: 12500 },
-        { label: "2026-06-02", desktop: 3000, mobile: 1398, price: 8900 },
-        { label: "2026-06-03", desktop: 2000, mobile: 9800, price: 15000 },
-        { label: "2026-06-04", desktop: 2780, mobile: 3908, price: 11200 },
-        { label: "2026-06-05", desktop: 1890, mobile: 4800, price: 9800 },
-        { label: "2026-06-06", desktop: 2390, mobile: 3800, price: 13400 },
-        { label: "2026-06-07", desktop: 3490, mobile: 4300, price: 21000 }
-    ]
-
-    const handleClick = () =>
-        active === "charts" ?
-            onClick("charts")
-            : onClick(null)
-
-    if (active === "charts") {
-        return (
-            <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1 min-h-0 max-h-[400px]" onClick={() => handleClick()}>
-                <CardContent className="flex flex-col gap-2 justify-between flex-1 min-h-0">
-                    <div className="text-sm font-semibold text-muted-foreground mb-2 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                                <Activity className="text-emerald-500 h-5 w-5" />
-                                <span>Ciclo de Vida</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2 bg-gray-800 dark:bg-zinc-600 text-white dark:text-white">
-                                    Cantidad
-                                </Badge>
-                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2">
-                                    Top productos
-                                </Badge>
-                                <Badge variant="secondary" className="p-3 text-medium flex items-center gap-2">
-                                    Frecuencia
-                                </Badge>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                            <Badge variant="secondary" className="p-2 text-medium flex items-center gap-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900 dark:text-emerald-400">
-                                <ArrowUpRight />
-                                En crecimiento
-                            </Badge>
-                            <Badge variant="ghost">Pidiendo mas items vs. período anterior</Badge>
-                        </div>
-                    </div>
-                    <ChartContainer config={chartConfig} className="flex-1 w-full min-h-0">
-                        <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#4AD9C4" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#4AD9C4" stopOpacity={0.1} />
-                                </linearGradient>
-                                <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#0D7C6E" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#0D7C6E" stopOpacity={0.1} />
-                                </linearGradient>
-                                <linearGradient id="fillPrice" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#66D9C9" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#66D9C9" stopOpacity={0.1} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="label"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                minTickGap={32}
-                                tickFormatter={(value) => value}
-                            />
-                            <YAxis
-                                yAxisId="left"
-                                orientation="left"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => {
-                                    if (value >= 1000) return `${(value / 1000).toFixed(0)}k`
-                                    return value.toString()
-                                }}
-                            />
-                            <YAxis
-                                yAxisId="right"
-                                orientation="right"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => {
-                                    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
-                                    if (value >= 1000) return `$${(value / 1000).toFixed(0)}k`
-                                    return `$${value.toString()}`
-                                }}
-                            />
-                            <ChartTooltip
-                                cursor={false}
-                                content={<ChartTooltipContent labelFormatter={(value) => value} indicator="dot" />}
-                            />
-                            <Area
-                                yAxisId="left"
-                                dataKey="mobile"
-                                type="natural"
-                                fill="url(#fillMobile)"
-                                stroke="#0D7C6E"
-                                stackId="a"
-                            />
-                            <Area
-                                yAxisId="left"
-                                dataKey="desktop"
-                                type="natural"
-                                fill="url(#fillDesktop)"
-                                stroke="#4AD9C4"
-                                stackId="a"
-                            />
-                            <Area
-                                yAxisId="right"
-                                dataKey="price"
-                                type="natural"
-                                fill="url(#fillPrice)"
-                                stroke="#66D9C9"
-                                stackId="b"
-                            />
-                            {/* ELIMINADO: <ChartLegend content={<ChartLegendContent />} /> */}
-                        </AreaChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
-        )
-    }
-
-    return (
-        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                <Activity className="text-emerald-500 h-5 w-5" />
-                <span className="text-md font-semibold">Ciclo de Vida</span>
-            </CardContent>
-        </Card>
-    )
-}
-
-// CHARTS
-
-// MEMORIAS
-
-function TabMemories({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
-    const handleClick = () =>
-        active === "memorias" ?
-            onClick("memorias")
-            : onClick(null)
-
-    if (active === "memorias") {
-        return (
-            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
-                    <div className="flex flex-1 gap-2 items-center justify-start">
-                        <Brain className="text-emerald-500 h-5 w-5" />
-                        <span className="text-md font-semibold">Memorías</span>
-                    </div>
-
-                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Content</div>
-                </CardContent>
-            </Card>
-        )
-    }
-
-    return (
-        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                <Activity className="text-emerald-500 h-5 w-5" />
-                <span className="text-md font-semibold">Ciclo de Vida</span>
-            </CardContent>
-        </Card>
-    )
-}
-
-// MEMORIAS
-
-// ACUERDOS
-
-function TabAcuerdos({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
-    const handleClick = () =>
-        active === "acuerdos" ?
-            onClick("acuerdos")
-            : onClick(null)
-
-    if (active === "acuerdos") {
-        return (
-            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
-                    <div className="flex flex-1 gap-2 items-center justify-start">
-                        <Handshake className="text-emerald-500 h-5 w-5" />
-                        <span className="text-md font-semibold">Acuerdos</span>
-                    </div>
-
-                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Content</div>
-                </CardContent>
-            </Card>
-        )
-    }
-
-    return (
-        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                <Handshake className="text-emerald-500 h-5 w-5" />
-                <span className="text-md font-semibold">Acuerdos</span>
-            </CardContent>
-        </Card>
-    )
-}
-
-// ACUERDOS
-
-// PEDIDOS
-
-function TabPedidos({ active, onClick }: { active?: "charts" | "memorias" | "acuerdos" | "pedidos" | null; onClick: (tab: "charts" | "memorias" | "acuerdos" | "pedidos" | null) => void }) {
-    const handleClick = () =>
-        active === "pedidos" ?
-            onClick("pedidos")
-            : onClick(null)
-
-    if (active === "pedidos") {
-        return (
-            <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-                <CardContent className="flex flex-col gap-2 items-start justify-center flex-1 min-h-0">
-                    <div className="flex flex-1 gap-2 items-center justify-start">
-                        <ShoppingCart className="text-emerald-500 h-5 w-5" />
-                        <span className="text-md font-semibold">Pedidos</span>
-                    </div>
-
-                    <div className="flex-1 mt-4 p-4 flex items-center justify-center mx-auto">Pedidos Content</div>
-                </CardContent>
-            </Card>
-        )
-    }
-
-    return (
-        <Card className="py-3 px-0 border-emerald-300" onClick={() => handleClick()}>
-            <CardContent className="flex gap-2 items-center flex-1 min-h-0">
-                <ShoppingCart className="text-emerald-500 h-5 w-5" />
-                <span className="text-md font-semibold">Pedidos</span>
-            </CardContent>
-        </Card>
-    )
-}
-
-// PEDIDOS
