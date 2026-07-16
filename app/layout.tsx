@@ -1,14 +1,14 @@
-import { Geist_Mono, Inter } from "next/font/google"
-
+import { Albert_Sans } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
+// Configuración de Albert Sans
+const albertSans = Albert_Sans({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-albert",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  display: "swap",
 })
 
 export default function RootLayout({
@@ -20,9 +20,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={albertSans.variable}
     >
-      <body>
+      <body className="font-albert">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
