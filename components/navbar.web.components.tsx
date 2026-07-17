@@ -6,7 +6,7 @@ const NavbarWeb = () => {
     <nav className="z-50 bg-transparent fixed top-8 left-0 right-0 flex items-center justify-between h-16 px-4 md:px-10 lg:px-20 !text-white">
       <button className="flex-shrink-0">
         <Image
-          src="/hawel.webp"
+          src="/logo.png"
           alt="Logo"
           width={100}
           height={100}
