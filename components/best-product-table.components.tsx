@@ -15,16 +15,19 @@ export function BestProductsTable({ range }: { range: DashboardRange }) {
     const products = buildRankedProducts(range, 2)
 
     return (
-        <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
-            <Table>
+        <Card className="border-border/20 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
+            <Table className="border-b border-gray-100 dark:border-gray-800">
                 <TableHeader>
-                    <TableRow>
+                    <TableRow className="border-b-1 border-gray-100 dark:border-gray-800">
                         <TableHead colSpan={2}>Productos más vendidos en el período</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {products.map((product) => (
-                        <TableRow key={product.label}>
+                        <TableRow
+                            key={product.label}
+                            className={"border-0"}
+                        >
                             <TableCell className="font-medium py-2">{product.label}</TableCell>
                             <TableCell className="text-right py-2">
                                 {new Intl.NumberFormat("es-AR", {

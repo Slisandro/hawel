@@ -142,7 +142,7 @@ export default function ClientsPanel() {
         <div className="min-h-svh flex flex-col gap-2 h-[100vh]">
             <AppNavbar />
             <main className="py-1 px-3 md:px-4 flex flex-col gap-2 flex-1 min-h-0">
-                <div className="border rounded-md p-4 flex flex-col gap-2">
+                <div className="border border-gray-200 dark:border-zinc-800 rounded-md p-4 flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-8 w-full">
                         <div className="flex flex-col gap-1.5 flex-1">
                             <InputGroup>

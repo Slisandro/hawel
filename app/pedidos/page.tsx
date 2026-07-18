@@ -235,7 +235,7 @@ export default function OrdersPanel() {
                         {orders.filter(order => order.status === "confirmed").length} Confirmadas
                     </Button>
                 </div>
-                <div className="border rounded-md p-4 flex flex-col gap-2">
+                <div className="border border-gray-200 dark:border-zinc-800 rounded-md p-4 flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-4 w-full">
                         <div className="flex flex-col gap-1.5 flex-1">
                             <InputGroup>
@@ -255,7 +255,7 @@ export default function OrdersPanel() {
 
                     <div className="flex flex-wrap items-end gap-4 py-2">
                         {/* Entrega */}
-                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border pl-2 rounded-md">
+                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border border-gray-200 dark:border-zinc-800 pl-2 rounded-md">
                             <Label htmlFor="day" className="text-sm text-muted-foreground font-medium">Entrega:</Label>
                             <Select defaultValue="all">
                                 <SelectTrigger id="day" className="h-9 bg-transparent border-0 shadow-none focus:ring-0 focus:ring-offset-0 flex-1">
@@ -275,7 +275,7 @@ export default function OrdersPanel() {
                         </div>
 
                         {/* Estado */}
-                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border pl-2 rounded-md">
+                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border border-gray-200 dark:border-zinc-800 pl-2 rounded-md">
                             <Label htmlFor="status" className="text-sm text-muted-foreground">Estado</Label>
                             <Select defaultValue="all">
                                 <SelectTrigger id="day" className="h-9 bg-transparent border-0 shadow-none focus:ring-0 focus:ring-offset-0 flex-1">
@@ -307,7 +307,7 @@ export default function OrdersPanel() {
                         </div>
 
                         {/* Categoría */}
-                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border pl-2 rounded-md">
+                        <div className="h-[40px] flex gap-1.5 flex items-center justify-center border border-gray-200 dark:border-zinc-800 pl-2 rounded-md">
                             <Label className="text-sm text-muted-foreground">Categoría</Label>
                             <Select defaultValue="todas">
                                 <SelectTrigger id="day" className="flex-1 h-full! bg-transparent border-0 shadow-none focus:ring-0 focus:ring-offset-0 flex-1">
@@ -371,7 +371,7 @@ export default function OrdersPanel() {
                                 open={expandedId === order.id}
                             >
                                 <Card
-                                    className="shadow-sm transition-shadow p-0 ring-0 border gap-0"
+                                    className="shadow-sm transition-shadow p-0 ring-0 border border-gray-200 dark:border-zinc-800 gap-0"
                                     onClick={() =>
                                         setExpandedId(expandedId === order.id ? null : order.id)
                                     }
@@ -596,7 +596,7 @@ export default function OrdersPanel() {
                                         <p className="text-lg font-semibold">Productos</p>
                                         <Table>
                                             <TableHeader>
-                                                <TableRow className="hover:bg-transparent">
+                                                <TableRow className="hover:bg-transparent border-b border-muted/20">
                                                     <TableHead className="flex-1 font-semibold w-1/4">Producto</TableHead>
                                                     <TableHead className="flex-1 font-semibold text-center w-1/4">Cantidad</TableHead>
                                                     <TableHead className="flex-1 font-semibold text-center w-1/4">Precio</TableHead>
@@ -610,7 +610,7 @@ export default function OrdersPanel() {
                                                             {product.name}
                                                         </TableCell>
                                                         <TableCell className="text-center flex-1">
-                                                            <div className="flex items-center justify-center border rounded-md overflow-hidden w-[max-content] mx-auto">
+                                                            <div className="flex items-center justify-center border border-gray-200 dark:border-zinc-800 rounded-md overflow-hidden w-[max-content] mx-auto">
                                                                 <Button className="border-0 px-4 rounded-r" variant="ghost">
                                                                     -
                                                                 </Button>

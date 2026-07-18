@@ -7,9 +7,10 @@ import { ThemeToggle } from "./theme-toggle.components"
 import NavigationComponent from "./navigation-components"
 import Image from "next/image"
 import Link from "next/link"
+import { useTheme } from "next-themes"
 
 export function AppNavbar() {
-
+    const { theme } = useTheme()
     return (
         <nav className="border-b border-border bg-background/95">
             <div className="flex h-16 items-center justify-between px-2 md:px-4 mx-auto">
@@ -17,7 +18,7 @@ export function AppNavbar() {
                     <Link href="/" className="min-w-[100px] h-full flex items-center justify-center relative">
                         <div className="relative h-full w-full">
                             <Image
-                                src="/hawel.webp"
+                                src={theme === "dark" ? "/logo.png" : "/hawel.webp"}
                                 alt="Logo"
                                 fill
                                 className="object-contain h-full w-full"

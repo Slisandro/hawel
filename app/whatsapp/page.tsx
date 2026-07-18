@@ -38,7 +38,7 @@ export default function WhatsAppPage() {
                             value="5491167247232"
                             onChange={() => { }}
                             placeholder="Buscar conversación..."
-                            className="px-4 mx-auto py-3 pl-10 w-full rounded-full text-md ring-0 outline-none border shadow-md"
+                            className="px-4 mx-auto py-3 pl-10 w-full rounded-full text-md ring-0 outline-none border border-gray-200 dark:border-zinc-800  shadow-md"
                         />
                     </div>
 

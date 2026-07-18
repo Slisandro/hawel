@@ -18,13 +18,16 @@ export function BestCustomersTable({ range }: { range: DashboardRange }) {
         <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow px-3 py-1">
             <Table>
                 <TableHeader>
-                    <TableRow>
+                    <TableRow className="border-b-1 border-gray-100 dark:border-gray-800">
                         <TableHead colSpan={2}>Top 2 vendedores del período</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {customers.map((customer) => (
-                        <TableRow key={customer.label}>
+                        <TableRow 
+                            key={customer.label}
+                            className={"border-0"}
+                        >
                             <TableCell className="font-medium py-2">{customer.label}</TableCell>
                             <TableCell className="text-right py-2">
                                 {new Intl.NumberFormat("es-AR", {

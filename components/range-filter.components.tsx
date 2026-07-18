@@ -73,7 +73,7 @@ export function RangeFilter({ value, onRangeChange }: RangeFilterProps) {
                         className={cn(
                             "h-8 px-4 py-1 rounded-xl hover:bg-stone-200 dark:hover:bg-stone-800",
                             isActive(period.value)
-                                ? "bg-gray-300 rounded-2xl dark:hover:bg-stone-800 dark:bg-stone-700"
+                                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-2xl"
                                 : ""
                         )}
                         onClick={() => handlePeriodClick(period.value)}

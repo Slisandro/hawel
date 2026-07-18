@@ -352,15 +352,10 @@ const chartConfigs: Record<ChartView, { title: string; description: string; badg
 // ============================================================
 // CHARTS
 // ============================================================
-function TabCharts({
-    active,
-    onClick
-}: {
-    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
-    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
-}) {
+function TabCharts() {
     const [selectedView, setSelectedView] = useState<ChartView>("topProductos");
     const [chartType, setChartType] = useState<"area" | "bar" | "line">("line");
+    const [isOpen, setIsOpen] = useState(true);
 
     const currentData = mockData[selectedView];
     const colors = chartColors[selectedView];
@@ -378,10 +373,21 @@ function TabCharts({
         }
     };
 
-    const handleClick = () =>
-        active === "charts" ?
-            onClick("charts")
-            : onClick(null);
+    const handleClick = () => setIsOpen((current) => !current);
+
+    if (!isOpen) {
+        return (
+            <Card className="py-5 border-emerald-300" onClick={handleClick}>
+                <CardContent className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <Activity className="text-emerald-500 h-5 w-5" />
+                        <span className="text-md font-semibold">Ciclo de Vida</span>
+                    </div>
+                    <div />
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="py-3 px-0 border-emerald-300 flex flex-col flex-1 min-h-0 max-h-[400px]" onClick={() => handleClick()}>
@@ -652,26 +658,18 @@ const timelineEvents: TimelineEvent[] = [
 // Filtros para cronología
 type TimelineFilter = "todas" | "Stock" | "Logistica" | "Anomalia";
 
-function TabCronologia({
-    active,
-    onClick
-}: {
-    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
-    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
-}) {
+function TabCronologia() {
     const [filter, setFilter] = useState<TimelineFilter>("todas");
+    const [isOpen, setIsOpen] = useState(false);
 
     const filteredEvents = timelineEvents.filter(event => {
         if (filter === "todas") return true;
         return event.category === filter;
     });
 
-    const handleClick = () =>
-        active === "cronologia" ?
-            onClick("cronologia")
-            : onClick(null);
+    const handleClick = () => setIsOpen((current) => !current);
 
-    if (active === "cronologia") {
+    if (isOpen) {
         return (
             <Card className="py-6 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
                 <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
@@ -834,26 +832,18 @@ const acuerdosMock: Acuerdo[] = [
 
 type AcuerdoFilter = "todas" | "Financiero" | "Comercial" | "Operativo";
 
-function TabAcuerdos({
-    active,
-    onClick
-}: {
-    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
-    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
-}) {
+function TabAcuerdos() {
     const [filter, setFilter] = useState<AcuerdoFilter>("todas");
+    const [isOpen, setIsOpen] = useState(false);
 
     const filteredAcuerdos = acuerdosMock.filter(acuerdo => {
         if (filter === "todas") return true;
         return acuerdo.category === filter;
     });
 
-    const handleClick = () =>
-        active === "acuerdos" ?
-            onClick("acuerdos")
-            : onClick(null);
+    const handleClick = () => setIsOpen((current) => !current);
 
-    if (active === "acuerdos") {
+    if (isOpen) {
         return (
             <Card className="py-6 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
                 <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
@@ -1001,42 +991,40 @@ const pedidosMock: Pedido[] = [
     { id: "ORD-000", date: "Hoy", total: "$1.193.994", items: 12, status: "en_proceso" },
     { id: "ORD-001", date: "09 de Jul", total: "$1.900.194", items: 15, status: "completado" },
     { id: "ORD-002", date: "02 de Jul", total: "$1.300.000", items: 10, status: "completado" },
-    { id: "ORD-003", date: "01 de Jul", total: "$700.00", items: 3, status: "cancelado" },
+    { id: "ORD-003", date: "01 de Jul", total: "$700.00", items: 3, status: "en_proceso" },
 ];
 
-type PedidosFilter = "todas" | "en_proceso" | "completado" | "cancelado";
+type PedidosFilter = "todas" | "en_proceso" | "completado";
 
-function TabPedidos({
-    active,
-    onClick
-}: {
-    active?: "charts" | "cronologia" | "acuerdos" | "pedidos" | null;
-    onClick: (tab: "charts" | "cronologia" | "acuerdos" | "pedidos" | null) => void;
-}) {
+function TabPedidos() {
     const [filter, setFilter] = useState<PedidosFilter>("todas");
+    const [isOpen, setIsOpen] = useState(false);
 
+    const handleClick = () => setIsOpen((current) => !current);
+    
     const filteredPedidos = pedidosMock.filter(pedido => {
         if (filter === "todas") return true;
         return pedido.status === filter;
     });
 
-    const handleClick = () =>
-        active === "pedidos" ?
-            onClick(null)
-            : onClick("pedidos");
-
     const getStatusBadge = (status: Pedido["status"]) => {
         switch (status) {
             case "completado":
-                return <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Confirmado</Badge>;
+                return (
+                    <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800">
+                        Confirmado
+                    </Badge>
+                );
             case "en_proceso":
-                return <Badge className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">Pendiente</Badge>;
-            case "cancelado":
-                return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Cancelado</Badge>;
+                return (
+                    <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800">
+                        Pendiente
+                    </Badge>
+                );
         }
     };
 
-    if (active === "pedidos") {
+    if (isOpen) {
         return (
             <Card className="py-6 px-0 border-emerald-300 flex flex-col flex-1" onClick={() => handleClick()}>
                 <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
@@ -1093,21 +1081,6 @@ function TabPedidos({
                                 >
                                     Completado
                                 </Badge>
-                                <Badge
-                                    variant="secondary"
-                                    className={cn(
-                                        "cursor-pointer transition-all",
-                                        filter === "cancelado"
-                                            ? "bg-emerald-600 text-white"
-                                            : "hover:bg-emerald-200 dark:hover:bg-emerald-700"
-                                    )}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setFilter("cancelado");
-                                    }}
-                                >
-                                    Cancelado
-                                </Badge>
                             </div>
                         </div>
                     </div>
@@ -1124,7 +1097,7 @@ function TabPedidos({
                                 </tr>
                             </thead>
                             <tbody>
-                                {pedidosMock.map((pedido) => (
+                                {filteredPedidos.map((pedido) => (
                                     <tr
                                         key={pedido.id}
                                         className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
@@ -1186,11 +1159,10 @@ function TabPedidos({
 const CollapsibleClientDetail = ({ client }: { client: DetailClient }) => {
     const router = useRouter();
     const [range, setRange] = useState<DashboardRange>(() => getDashboardRange("month"));
-    const [activeTab, setActiveTab] = useState<"charts" | "cronologia" | "acuerdos" | "pedidos">("charts");
 
     const KPIs = [
         {
-            title: "Revenue Total",
+            title: "Facturación Total",
             icon: <DollarSign className="h-5 w-5" />,
             subtitle: "desde sept. 2025",
             value: "$63.3M"
@@ -1262,13 +1234,13 @@ const CollapsibleClientDetail = ({ client }: { client: DetailClient }) => {
                     ))}
                 </div>
 
-                <TabCharts active={activeTab} onClick={() => setActiveTab("charts")} />
+                <TabCharts />
 
-                <TabCronologia active={activeTab} onClick={() => setActiveTab("cronologia")} />
+                <TabCronologia />
 
-                <TabAcuerdos active={activeTab} onClick={() => setActiveTab("acuerdos")} />
+                <TabAcuerdos />
 
-                <TabPedidos active={activeTab} onClick={() => setActiveTab("pedidos")} />
+                <TabPedidos />
             </div>
         </Card>
     );
