@@ -1,6 +1,5 @@
 "use client";
 import AnimationBrandsSliderWeb from "@/components/animation-brands.web.components";
-import AnimationWordHeaderWeb from "@/components/animation-word.web.components";
 import NavbarWeb from "@/components/navbar.web.components";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,10 +7,10 @@ import Image from "next/image";
 
 export default function About() {
     return (
-        <main className="min-h-screen flex py-6 flex-col gap-2 h-auto relative bg-[#07071F] overflow-x-hidden">
+        <main className="min-h-screen flex md:py-6 flex-col gap-2 h-auto relative bg-[#07071F] overflow-x-hidden">
             <NavbarWeb />
             <section
-                className="relative rounded-lg flex flex-col gap-0 overflow-hidden mx-6 h-[98vh]"
+                className="relative rounded-lg flex flex-col gap-0 overflow-hidden h-[100vh] md:mx-6 md:h-[98vh] md:rounded-[32px]"
                 style={{
                     backgroundImage: "url('/web/about-background.png')",
                     backgroundSize: "cover",
@@ -23,10 +22,10 @@ export default function About() {
                 <div className="absolute inset-0 bg-black/40 z-0" />
 
                 {/* Contenido principal */}
-                <div className="relative z-10 flex items-start px-20 text-white h-full">
+                <div className="relative z-10 flex items-start px-[24px] md:px-20 text-white h-full">
                     {/* Columna izquierda - Texto */}
                     <div className="w-full h-[80%] flex flex-col items-start justify-center gap-8">
-                        <p className="text-[120px] flex flex-col items-start justify-start font-semibold text-start leading-[1.2]">
+                        <p className="text-[64px] md:text-[120px] flex flex-col items-center md:items-start justify-start font-semibold text-center md:text-start leading-[1.2]">
                             Humanos
                             <span
                                 style={{
@@ -49,15 +48,15 @@ export default function About() {
                 </div>
             </section>
 
-            <section className="grid grid-cols-2 gap-10 px-28 pb-16 mt-[100px]">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-10 px-[24px] md:px-28 pb-16 mt-[40px] md:mt-[100px]">
                 <div className="flex flex-col items-start justify-center gap-6">
-                    <h2 className="text-[48px] font-semibold text-[#F5F5F7]">
+                    <h2 className="text-[32px] md:text-[48px] font-semibold text-[#F5F5F7]">
                         En la misión de evolucionar el trabajo humano, con la inteligencia artificial.
                     </h2>
-                    <p className="text-[#92949F] text-[32px] font-semibold">
+                    <p className="text-[#92949F] text-[20px] md:text-[32px] font-semibold">
                         Hawel nació con una misión clara
                     </p>
-                    <div className="text-[#92949F] text-[20px] font-regular flex flex-col gap-[20px]">
+                    <div className="text-[#92949F] text-[16px] md:text-[20px] font-regular flex flex-col gap-[20px]">
                         <span>
                             Buscamos evolucionar al ser humano a través de la inteligencia artificial.
                         </span>
@@ -75,13 +74,13 @@ export default function About() {
                         </span>
                     </div>
 
-                    <Button className="p-[32px] bg-white text-[#07071F] rounded-full font-bold text-[20px]">
+                    <Button className="p-[32px] bg-white text-[#07071F] rounded-full font-bold text-[20px] mx-auto md:mx-0">
                         Comenzar
                     </Button>
                 </div>
                 <div className="flex flex-col items-start justify-center gap-4">
                     <Card
-                        className="w-full h-full rounded-[32px] p-[40px] flex items-center justify-start"
+                        className="w-full h-full rounded-[32px] p-[24px] md:p-[40px] flex items-center justify-start"
                         style={{
                             backgroundImage: "url('/web/planet-background.png')",
                             backgroundSize: "cover",
@@ -90,7 +89,7 @@ export default function About() {
                         }}
                     >
                         <h2
-                            className="text-[48px] font-semibold text-[#F5F5F7]"
+                            className="text-[32px] md:text-[48px] font-semibold text-[#F5F5F7]"
                             style={{
                                 background: "linear-gradient(90deg, #55E3ED 0%, #7A3AEF 100%)",
                                 WebkitBackgroundClip: "text",
@@ -105,19 +104,19 @@ export default function About() {
                         <div className="h-[2px] rounded-[100%] w-full bg-[#F5F5F7] opacity-20 " />
 
                         <div className="flex flex-col w-full">
-                            <p className="text-[#F5F5F7] text-[32px] font-semibold">20 años de experiencia.</p>
-                            <span className="text-[#F5F5F7] text-[20px] font-normal">Somos profesionales que hemos trabajado en empresas líderes del sector.</span>
+                            <p className="text-[#F5F5F7] text-[20px] md:text-[32px] font-semibold">20 años de experiencia.</p>
+                            <span className="text-[#F5F5F7] text-[16px] md:text-[20px] font-normal">Somos profesionales que hemos trabajado en empresas líderes del sector.</span>
                         </div>
 
                         <div className="h-[2px] rounded-[100%] w-full bg-[#F5F5F7] opacity-20 " />
 
                         <div className="flex flex-col w-full">
-                            <p className="text-[#F5F5F7] text-[32px] font-semibold">+1000 patrones de compra modelados.</p>
-                            <span className="text-[#F5F5F7] text-[20px] font-normal">Algoritmos diseñados para interpretar modismos comerciales, específicos del mercado mayorista.</span>
+                            <p className="text-[#F5F5F7] text-[20px] md:text-[32px] font-semibold">+1000 patrones de compra modelados.</p>
+                            <span className="text-[#F5F5F7] text-[16px] md:text-[20px] font-normal">Algoritmos diseñados para interpretar modismos comerciales, específicos del mercado mayorista.</span>
                         </div>
 
                         <Card className="w-full bg-white p-[32px] rounded-[32px] flex flex-col items-center justify-center gap-[32px]">
-                            <h3 className="text-[20px] font-semibold text-[#07071F]">
+                            <h3 className="text-[20px] text-center font-semibold text-[#07071F]">
                                 Para ser los mejores, trabajamos con los
                                 {" "}
                                 <span
@@ -130,7 +129,7 @@ export default function About() {
                                 alt="Colaboradores"
                                 width={300}
                                 height={200}
-                                className="object-contain w-full h-full px-16"
+                                className="object-contain w-full h-full md:px-16"
                             />
                         </Card>
                     </Card>

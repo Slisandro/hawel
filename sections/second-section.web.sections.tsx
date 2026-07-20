@@ -1,7 +1,9 @@
+import Image from "next/image";
+
 /* eslint-disable @next/next/no-img-element */
 export default function SecondSectionWeb() {
     return (
-        <section className="min-h-[100vh] h-auto py-4 flex items-center flex-col justify-start mt-[80px] md:mt-[200px]">
+        <section className="min-h-[100vh] h-[max-content] py-4 flex items-center flex-col justify-start mt-[80px] md:mt-[200px]">
             <div className="text-[#F5F5F7] text-[32px] px-[32px] font-bold flex flex-col items-center justify-center gap-4 z-10">
                 <h2 className="text-center text-[24px] md:text-[32px]">De la informalidad — A la perfección.</h2>
 
@@ -62,7 +64,42 @@ export default function SecondSectionWeb() {
                     className="object-contain w-full h-full z-10 relative"
                     style={{ zIndex: 10 }}
                 />
+            </div>
 
+            <div className="block md:hidden relative w-full min-h-[300vh]">
+                <img
+                    src="/web/steps/background-step-1.png"
+                    alt="Hombre en llamadas de WhatsApp con su celular"
+                    className="!absolute z-4"
+                    style={{
+                        zIndex: 4,
+                        top: '10%',
+                        width: '100%',
+                        right: '0%',
+                        transform: 'translateX(25%)'
+                    }}
+                />
+
+                <img
+                    src="/web/steps/background-step-2.png"
+                    alt="Mujer recibiendo pedidos de WhatsApp en su computadora"
+                    className="!absolute z-4"
+                    style={{
+                        zIndex: 4,
+                        bottom: '0%',
+                        width: '100%',
+                        left: '0%',
+                        transform: 'translateX(-25%)'
+                    }}
+                />
+
+                <Image
+                    src="/web/steps/Steps1-mobile.png"
+                    alt="Pasos de cómo funciona Hawel"
+                    width={window.innerWidth} // Obtener tamaño de la pantalla actual
+                    height={0} // Obtener tamaño de la pantalla actual
+                    className="w-full h-full z-10 relative"
+                />
             </div>
         </section>
     )
