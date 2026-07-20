@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 export default function SecondSectionWeb() {
     return (
-        <section className="min-h-[100vh] h-[max-content] py-4 flex items-center flex-col justify-start mt-[80px] md:mt-[200px]">
-            <div className="text-[#F5F5F7] text-[32px] px-[32px] font-bold flex flex-col items-center justify-center gap-4 z-10">
+        <section className="min-h-[100vh] h-[max-content] md:py-4 flex items-center flex-col justify-start mt-[80px] md:mt-[200px]">
+            <div className="text-[#F5F5F7] text-[32px] px-[24px] md:px-[32px] font-bold flex flex-col items-center justify-center gap-[16px] md:gap-4 z-10">
                 <h2 className="text-center text-[24px] md:text-[32px]">De la informalidad — A la perfección.</h2>
 
                 <p className="text-center font-semibold text-[32px] md:text-[48px]">
                     Hawel convierte el caos de mensajes,
-                    <br />
+                    <br className="hidden md:block" />
                     audios y fotos de WhatsApp en pedidos
-                    <br />
+                    <br className="hidden md:block" />
                     <span
                         className="font-bold text-[32px] md:text-[48px]"
                         style={{
@@ -20,7 +20,7 @@ export default function SecondSectionWeb() {
                             color: "transparent",
                         }}
                     >
-                        listos para preparar.
+                        {" "}listos para preparar.
                     </span>
                 </p>
 
@@ -66,35 +66,18 @@ export default function SecondSectionWeb() {
 
             <div className="block md:hidden relative w-full min-h-[100vh]">
                 <img
-                    src="/web/steps/background-step-1.png"
-                    alt="Hombre en llamadas de WhatsApp con su celular"
-                    className="!absolute z-4"
-                    style={{
-                        zIndex: 4,
-                        top: '10%',
-                        width: '100%',
-                        right: '0%',
-                        transform: 'translateX(25%)'
-                    }}
-                />
-
-                <img
-                    src="/web/steps/background-step-2.png"
-                    alt="Mujer recibiendo pedidos de WhatsApp en su computadora"
-                    className="!absolute z-4"
-                    style={{
-                        zIndex: 4,
-                        bottom: '-5%',
-                        width: '75%',
-                        left: '0%',
-                        transform: 'translateX(-25%)'
-                    }}
-                />
-
-                <img
                     src="/web/steps/Steps1-mobile.png"
                     alt="Pasos de cómo funciona Hawel"
-                    className="relative z-10 w-full min-h-full object-cover"
+                    style={{
+                        display: "block",
+                        position: "relative",
+                        top: 0,
+                        transform: "translateY(-80px)",
+                        margin: "0 auto",
+                        zIndex: 40,
+                        height: "3078px",
+                        objectFit: "none",
+                    }}
                 />
             </div>
         </section>
