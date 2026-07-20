@@ -12,13 +12,15 @@ import React from "react";
 
 export default function Page() {
   return (
-    <main className="min-h-screen flex pt-6 flex-col gap-2 h-auto relative bg-[#07071F] overflow-x-hidden">
+    <main className="min-h-screen flex md:pt-6 flex-col gap-2 h-auto relative bg-[#07071F] overflow-x-hidden">
       <NavbarWeb />
       <FirstSectionWeb />
+
       <SecondSectionWeb />
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-10">
+      
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] px-[24px] gap-10">
         <div className="flex flex-col items-center justify-center gap-4 z-10">
-          <h2 className="text-[#F5F5F7] text-[48px] font-semibold text-center">
+          <h2 className="text-[#F5F5F7] text-[32px] text-start md:text-[48px] font-semibold md:text-center">
             <span
               style={{
                 background: "linear-gradient(90deg, #55CFED 0%, #55CFED 3%, #8AF3CA 10%, #8AF3CA 15%, #F5F5F7 22%, #F5F5F7 100%)",
@@ -34,14 +36,14 @@ export default function Page() {
             <br />
             cerebro comercial para tu negocio.
           </h2>
-          <p className="text-[#92949F] text-[24px] font-medium text-center">
+          <p className="text-[#92949F] text-[20px] md:text-[24px] font-medium text-start md:text-center">
             Detecta oportunidades invisibles para el ojo humano. Es proactivo.
             <br />
             Y se vuelve más inteligente con el tiempo.
           </p>
         </div>
 
-        <div className="w-full h-full grid grid-cols-2 px-48 gap-10">
+        <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 md:px-48 gap-10">
           <div className="w-full h-full p-[32px] !h-[650px] flex-col flex items-center justify-between bg-[#F5F5F7] rounded-[32px]">
             <div className="w-full flex flex-col">
               <p className="text-[#07071F] text-[24px] font-medium w-full">Entiende las reglas de tu negocio.</p>
@@ -127,11 +129,11 @@ export default function Page() {
         </Button>
       </section>
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-20 px-24">
-        <div className="text-center z-10 text-[#F5F5F7]">
-          <p className="font-semibold text-[32px]">Además,</p>
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[80px] md:mt-[100px] gap-8 md:gap-20 md:px-24">
+        <div className="text-center z-10 text-[#F5F5F7] flex flex-col items-center gap-2 px-[24px]">
+          <p className="font-semibold text-[24px] md:text-[32px]">Además,</p>
 
-          <h2 className="text-[#F5F5F7] text-[48px] font-semibold text-center leading-[1.25]">
+          <h2 className="text-[#F5F5F7] text-[32px] md:text-[48px] font-semibold text-center leading-[1.25]">
             Te brinda
             <span
               style={{
@@ -148,19 +150,19 @@ export default function Page() {
             <br />
             de todo lo que pasa.
           </h2>
-          <p className="text-[24px] font-medium">Más análisis. Mejores decisiones. Más crecimiento.</p>
+          <p className="text-[#F5F5F7] text-[24px] font-medium">Más análisis. Mejores decisiones. Más crecimiento.</p>
         </div>
 
         <div
-          className="relative w-full h-[max-content] flex items-center"
+          className="relative w-full h-[max-content] flex items-center py-8"
         >
           <img
             src="/web/section4-background.png"
             alt="Second section image"
-            className="absolute w-full h-auto"
+            className="absolute w-full h-full object-cover z-0"
           />
 
-          <div className="grid grid-cols-4 gap-4 z-100 items-center px-4 w-full h-full py-20">
+          <div className="grid md:grid-cols-4 gap-4 z-100 items-center px-4 w-full h-full md:py-20">
             <div className="w-full h-full bg-[#F5F5F70D] p-[24px] rounded-[32px] flex flex-col items-start gap-3">
               <div
                 className="bg-[#07071F33] p-[16px] rounded-full border"
@@ -345,10 +347,10 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] px-24">
-        <div className="bg-[#F5F5F7] rounded-[32px] p-10 w-full grid grid-cols-4 gap-10">
-          <div className="col-span-2 flex flex-col gap-4 items-start justify-center">
-            <h2 className="text-[#07071F] text-[40px] font-semibold leading-[1.25]">
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[80px] md:mt-[100px] px-[24px] md:px-24">
+        <div className="bg-[#F5F5F7] rounded-[32px] p-10 w-full grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="col-span-1 md:col-span-2 w-full flex flex-col gap-4 items-start justify-center">
+            <h2 className="text-[#07071F] text-[32px] md:text-[40px] font-semibold leading-[1.25]">
               Se instala en {" "}
               <span className="text-[#FD7366]">
                 15 días
@@ -364,10 +366,10 @@ export default function Page() {
               }}
             >
               <Shield className="text-[#07071F]" />
-              <p className="text-[#07071F] text-[20px]">Cero riesgo—si no funciona, no pagás.</p>
+              <p className="text-[#07071F] text-[16px] md:text-[20px]">Cero riesgo—si no funciona, no pagás.</p>
             </div>
           </div>
-          <div className="col-span-2 flex flex-col gap-4 items-start justify-around">
+          <div className="col-span-1 md:col-span-2 flex flex-col gap-4 items-start justify-around">
             <p className="text-[#676871] text-[20px]">
               Sin migraciones complejas ni capacitaciones eternas.
               <br />
@@ -379,7 +381,7 @@ export default function Page() {
               antes del primer mes
             </p>
           </div>
-          <div className="col-span-4 grid grid-cols-4 gap-6 items-start justify-center">
+          <div className="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6 items-start justify-center">
             <div className="col-span-1 flex flex-col items-start justify-start gap-4">
               <p className="text-[#676871] text-[20px] font-bold">Día 1 – 2</p>
               <div className="w-full flex items-center justify-start gap-4">
@@ -419,8 +421,7 @@ export default function Page() {
         </div>
       </section>
 
-
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-20 px-24">
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-20 px-[24px] md:px-24">
         <div className="text-center z-10 text-[#F5F5F7]">
           <h2 className="text-[#F5F5F7] text-[48px] font-semibold text-center leading-[1.25]">
             La {" "}
@@ -442,8 +443,8 @@ export default function Page() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full px-24">
-          <div className="col-span-1 flex flex-col items-center justify-center h-full">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full px-[24px] md:px-24">
+          <div className="col-span-1 w-full flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 1.png"
               alt="Second section image"
@@ -457,7 +458,7 @@ export default function Page() {
               className="object-contain w-full h-full"
             />
           </div>
-          <div className="col-span-2 flex flex-col items-center justify-center h-full">
+          <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 3.png"
               alt="Second section image"
@@ -471,7 +472,7 @@ export default function Page() {
               className="object-contain w-full h-full"
             />
           </div>
-          <div className="col-span-2 flex flex-col items-center justify-center h-full">
+          <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 5.png"
               alt="Second section image"
@@ -488,16 +489,16 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="min-h-[50vh] h-auto flex items-center justify-center mt-[100px] gap-20 px-24">
+      <section className="min-h-[50vh] h-auto flex flex-col md:flex-row items-center justify-center mt-[80px] md:mt-[100px] gap-8 md:gap-20 px-[24px] md:px-24">
         <img
           src="/web/lock-hawel.png"
           alt="Lock Hawel"
           className="object-contain h-[100px]"
         />
         <div className="flex flex-col items-start
-         justify-center z-10">
+         justify-center z-10 gap-2 md:gap-0">
           <span
-            className="text-[32px] font-semibold text-center"
+            className="text-[24px] md:text-[32px] font-semibold text-center mx-auto md:mx-0 md:text-start"
             style={{
               background: "linear-gradient(90deg, #FD7366 30%, #7A3AEF 70%)",
               WebkitBackgroundClip: "text",
@@ -508,8 +509,8 @@ export default function Page() {
           >
             Privacidad y seguridad 100%
           </span>
-          <p className="text-[#F5F5F7] text-[20px] font-bold">Tu información es tuya y de tus clientes.</p>
-          <span className="text-[#92949F] text-[20px] font-normal">
+          <p className="text-[#F5F5F7] mx-auto md:mx-0 text-center md:text-start text-[16px] md:text-[24px] md:text-[20px] font-bold">Tu información es tuya y de tus clientes.</p>
+          <span className="text-[#92949F] text-center md:text-start text-[16px] md:text-[24px] md:text-[20px] font-normal">
             Operamos bajo estrictos estándares de seguridad
             <br />
             para garantizar la confidencialidad de la información.
@@ -517,27 +518,29 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-6 px-24">
-        <img
-          src="/web/users.png"
-          alt="Users"
-          width={400}
-          height={350}
-          className="object-contain w-full mx-auto h-auto mb-6"
-        />
-        <h3 className="text-[48px] font-semibold text-center">
-          La Inteligencia Artificial
-          <br />
-          llegó para quedarse
-        </h3>
-        <p className="text-[32px] text-[#92949F]">
-          Da el paso que los líderes de la industria
-          <br />
-          ya están dando en toda Latinoamérica.
-        </p>
-        <Button className="p-[32px] bg-white text-[#07071F] rounded-full font-bold text-[20px]">
-          Comenzar
-        </Button>
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-0">
+        <div className="w-full h-[350px] md:h-auto mx-auto mb-6 overflow-hidden rounded-lg">
+          <img
+            src="/web/users.png"
+            alt="Users"
+            className="object-cover md:object-contain w-full h-full"
+          />
+        </div>
+        <div className="px-[24px] md:px-24 flex flex-col items-center justify-center gap-4 z-10">
+          <h3 className="text-[32px] md:text-[48px] font-semibold text-center">
+            La Inteligencia Artificial
+            <br />
+            llegó para quedarse
+          </h3>
+          <p className="text-[24px] text-center md:text-start md:text-[32px] text-[#92949F]">
+            Da el paso que los líderes de la industria
+            <br className="hidden md:block" />
+            ya están dando en toda Latinoamérica.
+          </p>
+          <Button className="p-[32px] bg-white text-[#07071F] rounded-full font-bold text-[20px]">
+            Comenzar
+          </Button>
+        </div>
       </section>
 
       <Section9 />
@@ -554,12 +557,10 @@ export default function Page() {
         <img
           src="/web/logo md.png"
           alt="Logo"
-          className="object-contain mx-auto mb-6 z-10"
-          width="400"
-          height="200"
+          className="object-contain mx-auto mb-6 z-10 w-[200px] md:w-[400px]"
         />
 
-        <div className="w-full px-10 flex items-center justify-between z-10 pb-4">
+        <div className="w-full px-10 flex items-center justify-between z-10 pb-4 flex-col md:flex-row gap-6 md:gap-0">
           <p className="">Hawel, Todos los derechos reservados @ 2026</p>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-[#F5F5F7] text-[20px] font-bold">Home</Link>
@@ -567,18 +568,18 @@ export default function Page() {
             <Link href="/contacto" className="text-[#F5F5F7] text-[20px] font-bold">Contacto</Link>
           </div>
           <div className="flex items-center gap-6">
-            <img 
+            <img
               src="/web/security 1.png"
               alt="Security"
-              className="object-contain mx-auto mb-6 z-10"
+              className="object-contain mx-auto z-10"
               width="50"
               height="50"
             />
-            
-            <img 
+
+            <img
               src="/web/security 2.png"
               alt="Security"
-              className="object-contain mx-auto mb-6 z-10"
+              className="object-contain mx-auto z-10"
               width="100"
               height="50"
             />
@@ -600,7 +601,7 @@ const Section9 = () => {
   });
 
   return (
-    <section className="min-h-[100vh] h-auto w-2/3 gap-10 mx-auto px-1 flex items-center flex-col justify-start mt-[100px] gap-6">
+    <section className="min-h-[100vh] h-auto w-full px-[24px] md:w-2/3 gap-10 mx-auto px-1 flex items-center flex-col justify-start mt-0 md:mt-[100px] gap-6">
       <Image
         src="/web/help.png"
         alt="Help"
