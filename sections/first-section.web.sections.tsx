@@ -5,7 +5,7 @@ import AnimationWordHeaderWeb from "@/components/animation-word.web.components";
 const FirstSectionWeb = () => {
   return (
     <section
-      className="relative rounded-lg flex flex-col gap-0 overflow-hidden w-full mx-0 md:mx-6"
+      className="relative rounded-lg flex flex-col gap-0 overflow-hidden w-full md:px-6"
       style={{
         backgroundImage: "url('/web/header-image-background.png')",
         backgroundSize: "cover",
@@ -17,10 +17,10 @@ const FirstSectionWeb = () => {
       <div className="absolute inset-0 bg-black/40 z-0" />
 
       {/* Contenido principal */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 items-center md:px-20 pt-30 md:pt-0 text-white gap-8 md:gap-0">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 items-center md:px-20 pt-[128px] md:pt-0 text-white gap-8 md:gap-0 px-[24px] md:px-0">
         {/* Columna izquierda - Texto */}
-        <div className="col-span-1 md:col-span-2 w-full h-[80%] flex flex-col items-center md:items-start justify-center gap-8">
-          <p className="text-5xl font-semibold text-center md:text-start leading-[1.2]">
+        <div className="col-span-1 md:col-span-2 w-full h-[80%] flex flex-col items-center md:items-start justify-center md:gap-8 gap-[24px]">
+          <p className="text-[48px] md:text-5xl font-semibold text-center md:text-start leading-[1.2]">
             La Inteligencia Artificial
             <br className="hidden md:block" /> {" "}
             que 
@@ -29,18 +29,18 @@ const FirstSectionWeb = () => {
             <br className="hidden md:block" />
             <AnimationWordHeaderWeb />
           </p>
-          <p className="text-2xl text-center md:text-start leading-[1.4]">
+          <p className="text-[20px] md:text-2xl text-center md:text-start leading-[1.4]">
             Incrementa tus ventas. Gestiona tus pedidos.
-            <br />
-            Ayuda a tus vendedores. Todo, por WhatsApp.
+            <br className="hidden md:block" />
+            {" "}Ayuda a tus vendedores. Todo, por WhatsApp.
           </p>
-          <button className="px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition">
+          <button className="px-6 py-3 bg-white text-[20px] md:text-2xl text-black font-semibold rounded-full hover:bg-gray-200 transition">
             Conocer más
           </button>
         </div>
 
         {/* Columna derecha - iPhone */}
-        <div className="col-span-1 px-16 w-full md:h-[80%] flex items-center justify-center mx-auto md:pl-8">
+        <div className="col-span-1 px-[32px] mt-[80px] md:px-16 w-full md:h-[80%] flex items-center justify-center mx-auto md:pl-8">
           <div className="relative w-full h-full flex items-center justify-center mx-auto">
             <Image
               src="/web/iphone-contenido.png"
@@ -56,7 +56,7 @@ const FirstSectionWeb = () => {
       </div>
 
       {/* Slider de marcas - Parte inferior */}
-      <div className="relative z-10 mt-6 md:mt-0 w-full h-[120px] flex items-center justify-center bg-gradient-to-t from-black/60 to-transparent">
+      <div className="relative z-10 px-0 pb-[32px] mt-[64px] md:mt-6 md:mt-0 w-full h-[120px] flex items-center justify-center bg-gradient-to-t from-black/60 to-transparent">
         <AnimationBrandsSliderWeb />
       </div>
     </section>

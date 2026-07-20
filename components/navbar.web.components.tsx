@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const NavbarWeb = () => {
   return (
-    <nav className="z-50 bg-transparent fixed top-8 left-0 right-0 flex items-center justify-between h-16 px-[24px] md:px-4 md:px-20 !text-white w-full">
+    <nav className="z-50 bg-transparent fixed top-[32px] left-0 right-0 flex items-center justify-between h-16 px-[24px] md:px-4 md:px-20 !text-white w-full">
       <button className="flex-shrink-0">
         <Image
           src="/logo.png"
@@ -23,7 +23,7 @@ const NavbarWeb = () => {
         <Link href="/dashboard" className="hover:opacity-70 transition-opacity text-xs">Dashboard</Link>
       </div>
       <div className="block md:hidden flex items-center justify-end flex-1 gap-4 md:gap-8 lg:gap-12 ml-4">
-        <Menu />
+        <Menu className="w-[26px] h-[20px]" />
       </div>
     </nav>
   )

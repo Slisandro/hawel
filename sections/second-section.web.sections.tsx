@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 /* eslint-disable @next/next/no-img-element */
 export default function SecondSectionWeb() {
     return (
@@ -66,7 +64,7 @@ export default function SecondSectionWeb() {
                 />
             </div>
 
-            <div className="block md:hidden relative w-full min-h-[300vh]">
+            <div className="block md:hidden relative w-full min-h-[100vh]">
                 <img
                     src="/web/steps/background-step-1.png"
                     alt="Hombre en llamadas de WhatsApp con su celular"
@@ -86,19 +84,17 @@ export default function SecondSectionWeb() {
                     className="!absolute z-4"
                     style={{
                         zIndex: 4,
-                        bottom: '0%',
-                        width: '100%',
+                        bottom: '-5%',
+                        width: '75%',
                         left: '0%',
                         transform: 'translateX(-25%)'
                     }}
                 />
 
-                <Image
+                <img
                     src="/web/steps/Steps1-mobile.png"
                     alt="Pasos de cómo funciona Hawel"
-                    width={window.innerWidth} // Obtener tamaño de la pantalla actual
-                    height={0} // Obtener tamaño de la pantalla actual
-                    className="w-full h-full z-10 relative"
+                    className="relative z-10 w-full min-h-full object-cover"
                 />
             </div>
         </section>
