@@ -211,7 +211,7 @@ export default function FourthSectionWeb() {
                                 borderColor: "linear-gradient(90deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
                             }}
                         >
-                            <PackageX />
+                            <PackageX className="text-[#8AF3CA]" />
                         </div>
                         <p className="text-[#F5F5F7] font-bold text-[20px] mb-0">Pedidos sin stock</p>
                         <p className="text-[#F5F5F7] font-medium text-[20px] mb-0">Últimos 7 días</p>

@@ -4,10 +4,11 @@
 import NavbarWeb from "@/components/navbar.web.components";
 import { Button } from "@/components/ui/button";
 import FirstSectionWeb from "@/sections/first-section.web.sections";
+import ForthSectionWeb from "@/sections/forth-section.web.sections";
 import FourthSectionWeb from "@/sections/fourth-section.web.sections";
 import SecondSectionWeb from "@/sections/second-section.web.sections";
 import ThirdSectionWeb from "@/sections/thrid-section.web.sections";
-import { ChevronDown, Shield } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -16,7 +17,7 @@ export default function Page() {
   return (
     <main className="min-h-screen flex md:pt-6 flex-col md:gap-2 h-auto relative bg-[#07071F] overflow-x-hidden">
       <NavbarWeb />
-      
+
       <FirstSectionWeb />
 
       <SecondSectionWeb />
@@ -25,83 +26,11 @@ export default function Page() {
 
       <FourthSectionWeb />
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[80px] md:mt-[100px] px-[24px] md:px-24">
-        <div className="bg-[#F5F5F7] rounded-[32px] p-10 w-full grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="col-span-1 md:col-span-2 w-full flex flex-col gap-4 items-start justify-center">
-            <h2 className="text-[#07071F] text-[32px] md:text-[40px] font-semibold leading-[1.25]">
-              Se instala en {" "}
-              <span className="text-[#FD7366]">
-                15 días
-              </span>
-              , reloj.
-              <br />
-              Sin complicaciones.
-            </h2>
-            <div
-              className="flex items-center gap-4 px-3 py-2 rounded-[16px]"
-              style={{
-                background: "linear-gradient(90deg, #F5F5F7 0%, #FD7366 100%)",
-              }}
-            >
-              <Shield className="text-[#07071F]" />
-              <p className="text-[#07071F] text-[16px] md:text-[20px]">Cero riesgo—si no funciona, no pagás.</p>
-            </div>
-          </div>
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-4 items-start justify-around">
-            <p className="text-[#676871] text-[20px]">
-              Sin migraciones complejas ni capacitaciones eternas.
-              <br />
-              Tampoco necesitás un equipo técnico propio.
-            </p>
-            <p className="text-[#676871] text-[20px]">
-              Dejamos a Hawel operando y empezás a ver resultados
-              <br />
-              antes del primer mes
-            </p>
-          </div>
-          <div className="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6 items-start justify-center">
-            <div className="col-span-1 flex flex-col items-start justify-start gap-4">
-              <p className="text-[#676871] text-[20px] font-bold">Día 1 – 2</p>
-              <div className="w-full flex items-center justify-start gap-4">
-                <div className="w-[8px] h-[8px] bg-[#07071F] rounded-full" />
-                <div className="h-[1px] bg-[#92949F] w-full" />
-              </div>
-              <h3 className="text-[#07071F] text-[24px] font-bold">Relevamiento e integración</h3>
-              <p className="text-[#676871] text-[20px]">Entendemos cómo vendés hoy y conectamos a Hawel con tu ERP, listas de precios y canales de WhatsApp.</p>
-            </div>
-            <div className="col-span-1 flex flex-col items-start justify-start gap-4">
-              <p className="text-[#676871] text-[20px] font-bold">Día 3 – 7</p>
-              <div className="w-full flex items-center justify-start gap-4">
-                <div className="w-[8px] h-[8px] bg-[#07071F] rounded-full" />
-                <div className="h-[1px] bg-[#92949F] w-full" />
-              </div>
-              <h3 className="text-[#07071F] text-[24px] font-bold">Entrenamiento con tu negocio.</h3>
-              <p className="text-[#676871] text-[20px]">Cargamos tus políticas mayoristas y adaptamos el sistema a tu identidad para que responda con tu misma precisión comercial.</p>
-            </div>
-            <div className="col-span-1 flex flex-col items-start justify-start gap-4">
-              <p className="text-[#676871] text-[20px] font-bold">Día 8 – 12</p>
-              <div className="w-full flex items-center justify-start gap-4">
-                <div className="w-[8px] h-[8px] bg-[#07071F] rounded-full" />
-                <div className="h-[1px] bg-[#92949F] w-full" />
-              </div>
-              <h3 className="text-[#07071F] text-[24px] font-bold">Simulación con casos reales</h3>
-              <p className="text-[#676871] text-[20px]">Validamos el sistema procesando pedidos e históricos reales, afinando el comportamiento hasta asegurar que el 100% de las órdenes salgan perfectas.</p>
-            </div>
-            <div className="col-span-1 flex flex-col items-start justify-start gap-4">
-              <p className="text-[#FD7366] text-[20px] font-bold">Día 14</p>
-              <div className="w-full flex items-center justify-start gap-4">
-                <div className="w-[8px] h-[8px] bg-[#FD7366] rounded-full" />
-              </div>
-              <h3 className="text-[#FD7366] text-[24px] font-bold">100% implementado.</h3>
-              <p className="text-[#676871] text-[20px]">Hawel queda operando al frente de tus canales de preventa, incrementando tu ticket promedio y enviando alertas predictivas a tu panel. Listo para escalar tu facturación desde el primer día.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ForthSectionWeb />
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-20 px-[24px] md:px-24">
-        <div className="text-center z-10 text-[#F5F5F7]">
-          <h2 className="text-[#F5F5F7] text-[48px] font-semibold text-center leading-[1.25]">
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[80px] gap-[24px] md:gap-20 px-[24px] md:px-24">
+        <div className="text-center z-10 text-[#F5F5F7] flex-1">
+          <h2 className="text-[#F5F5F7] text-[48px] w-full font-semibold text-center" style={{ letterSpacing: "-3%", lineHeight: "46px" }}>
             La {" "}
             <span
               style={{
@@ -116,48 +45,58 @@ export default function Page() {
             </span>
             {" "}
             se gana
-            <br />
+            <br className="hidden md:block" /> {" "}
             con resultados.
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full px-[24px] md:px-24">
-          <div className="col-span-1 w-full flex flex-col items-center justify-center h-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full md:px-24">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center w-full h-full">
             <img
               src="/web/bloque 1.png"
               alt="Second section image"
               className="object-contain w-full h-full"
             />
           </div>
-          <div className="col-span-1 flex flex-col items-center justify-center h-full">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 2.png"
               alt="Second section image"
               className="object-contain w-full h-full"
             />
           </div>
-          <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center h-full">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 3.png"
               alt="Second section image"
-              className="object-contain w-full h-full"
+              className="hidden md:block object-contain w-full h-full"
+            />
+            <img
+              src="/web/bloque 3-mobile.png"
+              alt="Second section image"
+              className="md:hidden object-contain w-auto md:h-full"
             />
           </div>
-          <div className="col-span-1 flex flex-col items-center justify-center h-full">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 4.png"
               alt="Second section image"
               className="object-contain w-full h-full"
             />
           </div>
-          <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center h-full">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 5.png"
               alt="Second section image"
-              className="object-contain w-full h-full"
+              className="md:block hidden object-contain w-full h-full"
+            />
+            <img
+              src="/web/bloque 5-mobile.png"
+              alt="Second section image"
+              className="md:hidden object-contain w-auto md:h-full h-[450px]"
             />
           </div>
-          <div className="col-span-1 flex flex-col items-center justify-center h-full">
+          <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center h-full">
             <img
               src="/web/bloque 6.png"
               alt="Second section image"
@@ -196,12 +135,17 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[100px] gap-0">
-        <div className="w-full h-[350px] md:h-auto mx-auto mb-6 overflow-hidden rounded-lg">
+      <section className="min-h-[100vh] h-auto flex items-center flex-col justify-start mt-[80px] gap-0">
+        <div className="w-full md:h-[350px] md:h-auto mx-auto mb-6 overflow-hidden rounded-lg">
           <img
             src="/web/users.png"
             alt="Users"
-            className="object-cover md:object-contain w-full h-full"
+            className="md:block hidden object-cover md:object-contain w-full h-full"
+          />
+          <img
+            src="/web/users-mobile.png"
+            alt="Users"
+            className="md:hidden object-cover w-full h-full"
           />
         </div>
         <div className="px-[24px] md:px-24 flex flex-col items-center justify-center gap-4 z-10">
