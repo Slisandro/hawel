@@ -8,7 +8,7 @@ import ForthSectionWeb from "@/sections/forth-section.web.sections";
 import FourthSectionWeb from "@/sections/fourth-section.web.sections";
 import SecondSectionWeb from "@/sections/second-section.web.sections";
 import ThirdSectionWeb from "@/sections/thrid-section.web.sections";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -167,7 +167,7 @@ export default function Page() {
 
       <Section9 />
 
-      <section className="min-h-[100vh] h-[max-content] flex items-center flex-col relative justify-between mt-[100px]">
+      <section className="min-h-[100vh] h-[max-content] flex items-center flex-col relative justify-between mt-[80px]">
         <img
           src="/web/footer-background.png"
           alt="Section 9"
@@ -179,17 +179,19 @@ export default function Page() {
         <img
           src="/web/logo md.png"
           alt="Logo"
-          className="object-contain mx-auto mb-6 z-10 w-[200px] md:w-[400px]"
+          className="object-contain mx-auto md:mb-6 z-10 w-[200px] md:w-[400px]"
         />
 
-        <div className="w-full px-10 flex items-center justify-between z-10 pb-4 flex-col md:flex-row gap-6 md:gap-0">
-          <p className="">Hawel, Todos los derechos reservados @ 2026</p>
-          <div className="flex items-center gap-6">
+        <div className="w-full flex items-center justify-between z-10 pb-[60px] md:pb-4 flex-col md:flex-row gap-[40px] md:gap-6 md:gap-0">
+          <p className="text-[16px] text-[#92949F]" style={{ letterSpacing: "-1%" }}>
+            Hawel, Todos los derechos reservados @ 2026
+          </p>
+          <div className="flex items-center gap-[40px] md:gap-6">
             <Link href="/" className="text-[#F5F5F7] text-[20px] font-bold">Home</Link>
             <Link href="/sobre-hawel" className="text-[#F5F5F7] text-[20px] font-bold">Sobre Hawel</Link>
             <Link href="/contacto" className="text-[#F5F5F7] text-[20px] font-bold">Contacto</Link>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center justify-center gap-[20px]">
             <img
               src="/web/security 1.png"
               alt="Security"
@@ -213,7 +215,7 @@ export default function Page() {
 }
 
 const Section9 = () => {
-  const [open, setOpen] = React.useState({
+  const [open, setOpen] = React.useState<Record<number, boolean>>({
     1: false,
     2: false,
     3: false,
@@ -222,8 +224,60 @@ const Section9 = () => {
     6: false
   });
 
+  const faqs = [
+    {
+      id: 1,
+      question: "¿Reemplaza a nuestro equipo actual de preventistas o atención al cliente?",
+      answer: (
+        <>
+          <span className="text-[#F5F5F7]">No, los potencia. </span>
+          Hawel absorbe el 80% del trabajo administrativo y rutinario —la carga manual de datos, la transcripción de audios y el control de faltantes—. Esto libera a tu fuerza de ventas para que se enfoquen puramente en negociar, fidelizar clientes y abrir nuevas cuentas en la calle.
+        </>
+      )
+    },
+    {
+      id: 2,
+      question: "¿Funciona solo o necesita un humano?",
+      answer: "Es autónomo para las órdenes de rutina. Si detecta un caso que requiere criterio humano —un reclamo complejo o una excepción comercial—, lo escala de inmediato a tu vendedor."
+    },
+    {
+      id: 3,
+      question: "¿Qué formatos de mensajes puede entender?",
+      answer: (
+        <>
+          Todos. Tus clientes o vendedores pueden enviar mensajes de texto tradicionales, notas de voz (largas o con ruido) o fotos de listas manuscritas.{" "}
+          <span className="text-[#F5F5F7] font-bold">La IA procesa todo en segundos.</span>
+        </>
+      )
+    },
+    {
+      id: 4,
+      question: "¿Cómo evita la IA cometer errores con las listas de precios, deudas o stock?",
+      answer: "Hawel no es un bot que tira respuestas automáticas; lee tu ERP en tiempo real. Antes de confirmar cualquier pedido por WhatsApp, el sistema valida el stock neto disponible, verifica si el cliente tiene deuda corriente y aplica la lista de precios personalizada que le corresponde. Si hay alguna inconsistencia, el pedido se frena y se notifica a tu equipo."
+    },
+    {
+      id: 5,
+      question: "¿Cómo se maneja la confidencialidad de la información de mi empresa?",
+      answer: "La seguridad es nuestra absoluta prioridad. Toda la transferencia de datos entre tus canales de venta y tu ERP viaja de forma encriptada bajo protocolos seguros (SSL/HTTPS). Hawel solo procesa la información necesaria para validar y cargar las órdenes, garantizando el aislamiento de tus bases de datos."
+    },
+    {
+      id: 6,
+      question: "¿Cuánto demora la implementación?",
+      answer: (
+        <>
+          Al ser una solución en la nube, el despliegue es ágil. Entre el análisis técnico y el período de pruebas para garantizar fricción cero, toma menos de{" "}
+          <span className="text-[#F5F5F7] font-bold">2 semanas.</span>
+        </>
+      )
+    }
+  ];
+
+  const toggleFAQ = (id: number) => {
+    setOpen({ ...open, [id]: !open[id] });
+  };
+
   return (
-    <section className="min-h-[100vh] h-auto w-full px-[24px] md:w-2/3 gap-10 mx-auto px-1 flex items-center flex-col justify-start mt-0 md:mt-[100px] gap-6">
+    <section className="min-h-[100vh] h-auto w-full px-[24px] md:w-2/3 mx-auto flex items-center flex-col justify-start mt-0 md:mt-[100px] gap-6">
       <Image
         src="/web/help.png"
         alt="Help"
@@ -232,7 +286,7 @@ const Section9 = () => {
         className="object-contain mb-6"
       />
       <h3 className="text-[48px] font-semibold text-center">
-        ¿Preguntas? {" "}
+        ¿Preguntas?{" "}
         <span
           style={{
             background: "linear-gradient(90deg, #55E3ED 0%, #8AF3CA 100%)",
@@ -246,164 +300,70 @@ const Section9 = () => {
         </span>
       </h3>
 
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 1: !open[1] })}
-          className="w-full h-full rounded-[31px] p-[24px] flex my-[1px] flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Reemplaza a nuestro equipo actual de preventistas o atención al cliente?
-            </span>
-          </div>
-          {open[1] && <span className="text-[#92949F] text-[20px] font-normal">
-            <span className="text-[#F5F5F7]">
-              No, los potencia. {" "}
-            </span>
-            Hawel absorbe el 80% del trabajo administrativo y rutinario —la carga manual de datos, la transcripción de audios y el control de faltantes—. Esto libera a tu fuerza de ventas para que se enfoquen puramente en negociar, fidelizar clientes y abrir nuevas cuentas en la calle.
-          </span>}
-        </button>
-      </div>
-
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 2: !open[2] })}
-          className="w-full h-full rounded-[31px] p-[24px] flex my-[1px] flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Funciona solo o necesita un humano?
-            </span>
-          </div>
-          {open[2] && <span className="text-[#92949F] text-[20px] font-normal">
-            Es autónomo para las órdenes de rutina. Si detecta un caso que requiere criterio humano —un reclamo complejo o una excepción comercial—, lo escala de inmediato a tu vendedor.
-          </span>}
-        </button>
-      </div>
-
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 3: !open[3] })}
-          className="w-full h-full rounded-[31px] p-[24px] my-[1px] flex flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Qué formatos de mensajes puede entender?
-            </span>
-          </div>
-          {open[3] && <span className="text-[#92949F] text-[20px] font-normal">
-            Todos. Tus clientes o vendedores pueden enviar mensajes de texto tradicionales, notas de voz (largas o con ruido) o fotos de listas manuscritas. {" "}
-            <span className="text-[#F5F5F7] font-bold">
-              La IA procesa todo en segundos.
-            </span>
-          </span>}
-        </button>
-      </div>
-
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 4: !open[4] })}
-          className="w-full h-full rounded-[31px] p-[24px] my-[1px] flex flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Cómo evita la IA cometer errores con las listas de precios, deudas o stock?
-            </span>
-          </div>
-          {open[4] && <span className="text-[#92949F] text-[20px] font-normal">
-            Hawel no es un bot que tira respuestas automáticas; lee tu ERP en tiempo real. Antes de confirmar cualquier pedido por WhatsApp, el sistema valida el stock neto disponible, verifica si el cliente tiene deuda corriente y aplica la lista de precios personalizada que le corresponde. Si hay alguna inconsistencia, el pedido se frena y se notifica a tu equipo.
-          </span>}
-        </button>
-      </div>
-
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 5: !open[5] })}
-          className="w-full h-full rounded-[31px] p-[24px] flex my-[1px] flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Cómo se maneja la confidencialidad de la información de mi empresa?
-            </span>
-          </div>
-          {open[5] && <span className="text-[#92949F] text-[20px] font-normal">
-            La seguridad es nuestra absoluta prioridad. Toda la transferencia de datos entre tus canales de venta y tu ERP viaja de forma encriptada bajo protocolos seguros (SSL/HTTPS). Hawel solo procesa la información necesaria para validar y cargar las órdenes, garantizando el aislamiento de tus bases de datos.
-          </span>}
-        </button>
-      </div>
-
-      <div
-        className="w-full rounded-[32px] h-full p-[1px]"
-        style={{
-          background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
-        }}
-      >
-        <button
-          onClick={() => setOpen({ ...open, 6: !open[6] })}
-          className="w-full h-full rounded-[32px] p-[24px] my-[1px] flex flex-col items-start text-start justify-start gap-4"
-          style={{
-            background: "#07071fF9"
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <ChevronDown className="text-[#8AF3CA] w-6 h-6" />
-            <span className="text-[#F5F5F7] text-[20px] font-bold">
-              ¿Cuánto demora la implementación?
-            </span>
-          </div>
-          {open[6] && <span className="text-[#92949F] text-[20px] font-normal">
-            Al ser una solución en la nube, el despliegue es ágil. Entre el análisis técnico y el período de pruebas para garantizar fricción cero, toma menos de {" "}
-            <span className="text-[#F5F5F7] font-bold">
-              2 semanas.
-            </span>
-          </span>}
-        </button>
+      <div className="flex-1 flex flex-col items-center justify-center gap-[16px] w-full">
+        {faqs.map((faq) => (
+          <FAQItem
+            key={faq.id}
+            id={faq.id}
+            isOpen={open[faq.id]}
+            onToggle={() => toggleFAQ(faq.id)}
+            question={faq.question}
+            answer={faq.answer}
+          />
+        ))}
       </div>
     </section>
-  )
-}
+  );
+};
+
+const FAQItem = ({
+  isOpen,
+  onToggle,
+  question,
+  answer
+}: {
+  id: number;
+  isOpen: boolean;
+  onToggle: () => void;
+  question: string;
+  answer: React.ReactNode;
+}) => {
+  return (
+    <div
+      className="w-full rounded-[32px] h-full p-[1px]"
+      style={{
+        background: "linear-gradient(45deg, #8AF3CA 0%, #16548E 50%, #8AF3CA 100%)",
+      }}
+    >
+      <button
+        onClick={onToggle}
+        className="w-full h-full rounded-[32px] p-[24px] flex flex-col items-start text-start justify-start gap-4"
+        style={{
+          background: "#07071fF9"
+        }}
+      >
+        <div className="flex items-center justify-between gap-[16px] w-full">
+          {isOpen ? (
+            <ChevronUp
+              className="relative text-[#8AF3CA] shrink-0"
+              style={{ width: "32px", height: "32px" }}
+            />
+          ) : (
+            <ChevronDown
+              className="relative text-[#8AF3CA] shrink-0"
+              style={{ width: "32px", height: "32px" }}
+            />
+          )}
+          <span className="text-[#F5F5F7] text-[20px] font-bold flex-1">
+            {question}
+          </span>
+        </div>
+        {isOpen && (
+          <span className="text-[#92949F] text-[20px] font-normal">
+            {answer}
+          </span>
+        )}
+      </button>
+    </div>
+  );
+};
