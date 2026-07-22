@@ -25,7 +25,7 @@ export default function About() {
                 <div className="relative z-10 flex items-start px-[24px] md:px-20 text-white h-full">
                     {/* Columna izquierda - Texto */}
                     <div className="w-full h-[80%] flex flex-col items-start justify-center gap-8">
-                        <p className="text-[64px] md:text-[120px] flex flex-col items-center md:items-start justify-start font-semibold text-center md:text-start leading-[1.2]">
+                        <p style={{ letterSpacing: "-3%" }} className="leading-[60px] text-[64px] md:text-[120px] flex flex-col items-center md:items-start justify-start font-semibold text-center md:text-start leading-[1.2]">
                             Humanos
                             <span
                                 style={{
@@ -48,8 +48,8 @@ export default function About() {
                 </div>
             </section>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-10 px-[24px] md:px-28 pb-16 mt-[40px] md:mt-[100px]">
-                <div className="flex flex-col items-start justify-center gap-6">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-[40px] md:gap-10 px-[24px] md:px-28 pb-[24px] md:pb-16 mt-[40px] md:mt-[100px]">
+                <div className="flex flex-col items-start justify-center gap-[16px] md:gap-6">
                     <h2 className="text-[32px] md:text-[48px] font-semibold text-[#F5F5F7]">
                         En la misión de evolucionar el trabajo humano, con la inteligencia artificial.
                     </h2>
@@ -74,7 +74,7 @@ export default function About() {
                         </span>
                     </div>
 
-                    <Button className="p-[32px] bg-white text-[#07071F] rounded-full font-bold text-[20px] mx-auto md:mx-0">
+                    <Button className="p-[32px] mt-[16px] bg-white text-[#07071F] rounded-full font-bold text-[20px] mx-auto md:mx-0">
                         Comenzar
                     </Button>
                 </div>
@@ -124,7 +124,7 @@ export default function About() {
                                 >mejores.</span>
                             </h3>
 
-                            <Image 
+                            <Image
                                 src="/web/colaboradores.png"
                                 alt="Colaboradores"
                                 width={300}

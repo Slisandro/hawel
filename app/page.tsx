@@ -50,7 +50,7 @@ export default function Page() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full md:px-24">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-[24px] md:gap-2 w-full md:px-24">
           <div className="col-span-2 md:col-span-1 flex flex-col items-center justify-center w-full h-full">
             <img
               src="/web/bloque 1.png"
