@@ -6,10 +6,15 @@ import { cn } from "@/lib/utils"
 import type { GlassCustomization } from "@/lib/glass-utils"
 import { hoverEffects, type HoverEffect } from "@/lib/hover-effects"
 
+// Este tipo es para las variantes de glass del Card, NO para el Button
+type GlassVariant = "default" | "glass" | "frosted" | "fluted" | "crystal"
+
 export interface ButtonProps
   extends Omit<React.ComponentProps<typeof BaseButton>, "glass"> {
   effect?: HoverEffect
   glass?: GlassCustomization
+  // Eliminamos variant de aquí porque el BaseButton ya tiene su propio variant
+  // Si quieres agregar glass, usa la prop glass directamente
 }
 
 /**
@@ -32,14 +37,21 @@ export interface ButtonProps
 export const Button = React.forwardRef<
   HTMLButtonElement,
   ButtonProps
->(({ className, effect = "glow", variant = "glass", glass, ...props }, ref) => {
+>(({ className, effect = "glow", glass, ...props }, ref) => {
+  const glassClasses = glass ? [
+    "glass-bg",
+    glass.color ? `[--glass-color:${glass.color}]` : "",
+    glass.blur ? `[--glass-blur:${glass.blur}px]` : "",
+    glass.transparency ? `[--glass-opacity:${glass.transparency}]` : "",
+    glass.outline ? `[--glass-border:${glass.outline}]` : "",
+  ].filter(Boolean).join(" ") : ""
+
   return (
     <BaseButton
       ref={ref}
-      variant={variant}
-      glass={glass}
       className={cn(
-        "relative overflow-hidden",
+        "relative overflow-hidden transition-all duration-300",
+        glassClasses,
         hoverEffects({ hover: effect }),
         className
       )}
@@ -48,4 +60,3 @@ export const Button = React.forwardRef<
   )
 })
 Button.displayName = "Button"
-
