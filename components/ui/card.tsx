@@ -1,18 +1,35 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+
+// Definimos los tipos de variantes
+type CardVariant = "default" | "glass" | "frosted" | "fluted" | "crystal"
 
 function Card({
   className,
   size = "default",
+  variant = "default", // <-- Nueva prop
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & { 
+  size?: "default" | "sm";
+  variant?: CardVariant; // <-- Tipo para las variantes de glass
+}) {
+  // Mapeo de variantes a clases CSS
+  const variantClasses: Record<CardVariant, string> = {
+    default: "",
+    glass: "glass-bg border-0 shadow-glass",
+    frosted: "glass-frosted border-0 shadow-glass",
+    fluted: "glass-fluted border-0 shadow-glass",
+    crystal: "glass-crystal border-0 shadow-glass",
+  }
+
   return (
     <div
       data-slot="card"
       data-size={size}
+      data-variant={variant}
       className={cn(
         "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground shadow-xs ring-1 ring-foreground/10 [--card-spacing:--spacing(6)] has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(4)] *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        variantClasses[variant], // <-- Aplicamos la clase de la variante
         className
       )}
       {...props}
